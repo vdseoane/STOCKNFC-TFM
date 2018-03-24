@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/side_nav_bar"
+    android:gravity="top"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+    >
+
+    <ImageView
+        android:id="@+id/imageViewLogIn"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:paddingTop="@dimen/nav_header_vertical_spacing"
+        app:srcCompat="@drawable/user"
+        android:layout_gravity="center"/>
+
+    <EditText
+        android:id="@+id/usuarioTxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:hint="@string/usuarioTxt"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:inputType="text"
+        android:textSize="20sp"/>
+
+    <EditText
+        android:id="@+id/passTxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:hint="@string/passTxt"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:inputType="textPassword"
+        android:textSize="20sp"/>
+
+    <Button
+        android:id="@+id/botonLogIn"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="Button"
+        android:layout_gravity="center"
+        android:onClick=""/>
+    <TextView
+        android:id="@+id/textoRegistrar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/registrar"
+        android:layout_gravity="center"
+        android:textSize="12sp"/>
+
+
+</LinearLayout>
