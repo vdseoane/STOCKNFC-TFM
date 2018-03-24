@@ -38,6 +38,14 @@ public class StockNFCDataBase extends SQLiteOpenHelper {
                 ConstantesArticulo.PRECIO_ARTICULO + " FLOAT, " +
                 ConstantesArticulo.IMAGEN_ARTICULO + " BLOB, " +
                 ConstantesArticulo.STOCK_ARTICULO + " INTEGER NOT NULL);");
+
+        //Usuario
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + ConstantesUsuario.USUARIO_TABLE_NAME + " (" +
+                ConstantesUsuario.EMAIL_USUARIO + " TEXT NOT NULL PRIMARY KEY," +
+                ConstantesUsuario.NOMBRE_USUARIO + " TEXT NOT NULL, " +
+                ConstantesUsuario.PASS_USUARIO + " TEXT NOT NULL, " +
+                ConstantesUsuario.ROL_USUARIO + " TEXT); ");
+
     }
 
     @Override
@@ -45,6 +53,7 @@ public class StockNFCDataBase extends SQLiteOpenHelper {
         if (oldVersion < newVersion) {
             //Eliminamos las tablas para volver a crearlas
             db.execSQL("DROP TABLE IF EXISTS " + ConstantesArticulo.ARTICULO_TABLE_NAME + ";");
+            db.execSQL("DROP TABLE IF EXISTS " + ConstantesUsuario.USUARIO_TABLE_NAME+ ";");
             onCreate(db);
         }
     }

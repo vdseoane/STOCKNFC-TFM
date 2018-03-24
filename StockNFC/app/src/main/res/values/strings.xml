@@ -33,4 +33,5 @@
     <string name="registroTxt">Registro de usuario</string>
     <string name="emailTxt">Email</string>
     <string name="rolTxt">Rol</string>
+    <string name="entrar">Entrar</string>
 </resources>

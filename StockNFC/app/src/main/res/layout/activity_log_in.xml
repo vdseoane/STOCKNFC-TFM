@@ -42,9 +42,9 @@
         android:id="@+id/botonLogIn"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:text="Button"
+        android:text="@string/entrar"
         android:layout_gravity="center"
-        android:onClick=""/>
+        android:onClick="onClick"/>
     <TextView
         android:id="@+id/textoRegistrar"
         android:layout_width="wrap_content"
