@@ -30,6 +30,10 @@ public class Articulo {
         this.imagen_articulo = imagen_articulo;
     }
 
+    public Articulo(String nombre) {
+        this.nombre = nombre;
+    }
+
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }

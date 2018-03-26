@@ -24,4 +24,11 @@
     <string name="rolTxt">Rol</string>
     <string name="entrar">Entrar</string>
     <string name="aceptar">Aceptar</string>
+    <string name="nombreArticulo">Nombre articulo</string>
+    <string name="stockArticulo">Stock</string>
+    <string name="alertaStock">Alerta stock</string>
+    <string name="precioArticulo">Precio</string>
+    <string name="fechaArticulo">Fecha</string>
+    <string name="proveedorArticulo">Proveedor</string>
+    <string name="guardar">Guardar</string>
 </resources>

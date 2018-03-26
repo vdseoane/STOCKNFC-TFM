@@ -1,9 +1,6 @@
 package com.example.victor.stocknfc;
 
 import android.os.Bundle;
-import android.support.design.internal.NavigationMenu;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
@@ -18,6 +15,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.victor.stocknfc.fragmetos.Fragmento_1;
+import com.example.victor.stocknfc.fragmetos.ListaArticulos;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -61,7 +59,7 @@ public class MainActivity extends AppCompatActivity
         emailUsuario.setText(this.emailUsuario);
 
         //Cargamos por defecto el listado de productos almacenado
-        cargarFragmento(new Fragmento_1());
+        cargarFragmento(new ListaArticulos());
         navigationView.getMenu().getItem(0).setChecked(true);
     }
 
@@ -104,9 +102,9 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            cargarFragmento(new Fragmento_1());
+            cargarFragmento(new ListaArticulos());
         } else if (id == R.id.nav_gallery) {
-
+            cargarFragmento(new Fragmento_1());
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {

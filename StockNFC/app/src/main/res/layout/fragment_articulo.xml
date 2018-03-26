@@ -1,0 +1,61 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.victor.stocknfc.fragmetos.Fragmento_Articulo">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <EditText
+        android:id="@+id/nombreArticulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/nombreArticulo"
+        android:inputType="text"/>
+    <EditText
+        android:id="@+id/stockArticulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/stockArticulo"
+        android:inputType="number"/>
+    <EditText
+        android:id="@+id/alertaArticulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/alertaStock"
+        android:inputType="number"/>
+    <EditText
+        android:id="@+id/precioArticulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/precioArticulo"
+        android:inputType="numberDecimal"/>
+    <EditText
+        android:id="@+id/fechaArticulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/fechaArticulo"
+        android:enabled="false"/>
+    <EditText
+        android:id="@+id/proveedorArticulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/proveedorArticulo"
+        android:inputType="text"/>
+    <ImageView
+        android:id="@+id/imgArticulo"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/user"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"/>
+
+    <Button
+        android:id="@+id/btnArticulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/guardar"
+        android:layout_marginTop="15dp"/>
+
+</LinearLayout>
