@@ -29,6 +29,8 @@
             android:id="@+id/contenedorFragments"
             android:layout_below="@+id/toolbarView">
         </RelativeLayout>
+
+        <!--<include layout="@layout/activity_registro" />-->
     </RelativeLayout>
 
 

@@ -1,6 +1,7 @@
 package com.example.victor.stocknfc;
 
 import android.os.Bundle;
+import android.support.design.internal.NavigationMenu;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -14,11 +15,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.example.victor.stocknfc.fragmetos.Fragmento_1;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    //Datos del intent LogIn
+    String nombreUsuario;
+    String emailUsuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +50,19 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //Modificamos los datos de la cabecera del menu lateral
+        View hView = navigationView.getHeaderView(0);
+        TextView nombreUsuario = hView.findViewById(R.id.nombreUsuarioMenu);
+        TextView emailUsuario = (TextView) hView.findViewById(R.id.emailUsuarioMenu);
+        //Obtenemos nombre e email del usuario desde el intent
+        recibirDatos();
+        nombreUsuario.setText(this.nombreUsuario);
+        emailUsuario.setText(this.emailUsuario);
+
+        //Cargamos por defecto el listado de productos almacenado
+        cargarFragmento(new Fragmento_1());
+        navigationView.getMenu().getItem(0).setChecked(true);
     }
 
     @Override
@@ -105,5 +124,12 @@ public class MainActivity extends AppCompatActivity
         FragmentManager manager = getSupportFragmentManager();
 
         manager.beginTransaction().replace(R.id.contenedorFragments, fragmento).commit();
+    }
+
+
+    public void recibirDatos(){
+        Bundle extras = getIntent().getExtras();
+        nombreUsuario = extras.getString("nombreUsuario");
+        emailUsuario = extras.getString("emailUsuario");
     }
 }
