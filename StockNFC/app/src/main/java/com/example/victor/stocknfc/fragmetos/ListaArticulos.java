@@ -19,6 +19,8 @@ import android.widget.Button;
 import com.example.victor.stocknfc.MainActivity;
 import com.example.victor.stocknfc.R;
 import com.example.victor.stocknfc.VOs.Articulo;
+import com.example.victor.stocknfc.datos.ArticuloDB;
+import com.example.victor.stocknfc.datos.StockNFCDataBase;
 import com.example.victor.stocknfc.logIn.LogIn;
 
 import java.util.ArrayList;
@@ -27,6 +29,8 @@ import java.util.ArrayList;
  * A simple {@link Fragment} subclass.
  */
 public class ListaArticulos extends android.support.v4.app.Fragment {
+    public StockNFCDataBase bd;
+    ArticuloDB bdArticulo;
 
     ArrayList<Articulo> listaArticulo;
     RecyclerView recycler;
@@ -47,7 +51,8 @@ public class ListaArticulos extends android.support.v4.app.Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+context = getContext();
+        bd = new StockNFCDataBase(context);
         recycler= (RecyclerView) getView().findViewById(R.id.recycler);
         recycler.setLayoutManager(new LinearLayoutManager(getView().getContext(), LinearLayoutManager.VERTICAL, false));
 FloatingActionButton botonAnadir = getView().findViewById(R.id.btnAnhadirArticulo);
@@ -58,13 +63,21 @@ botonAnadir.setOnClickListener(new View.OnClickListener() {
         manager.beginTransaction().replace(R.id.contenedorFragments, new Fragmento_Articulo()).commit();
     }
 });
-        listaArticulo = new ArrayList<Articulo>();
+
+
+        listaArticulo = obtenerArticulos();
 
         for(int i=0; i<300; i++){
-            listaArticulo.add(new Articulo("Hola" + i));
+            //listaArticulo.add(new Articulo("Hola" + i));
 
             AdaptadorDatos adapter = new AdaptadorDatos(getActivity(), listaArticulo);
             recycler.setAdapter(adapter);
         }
+    }
+
+    private ArrayList<Articulo> obtenerArticulos() {
+        bdArticulo = new ArticuloDB(context);
+
+        return bdArticulo.obtenerArticulos(bd.getReadableDatabase());
     }
 }

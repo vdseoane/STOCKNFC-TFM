@@ -1,6 +1,5 @@
 package com.example.victor.stocknfc.VOs;
 
-import java.sql.Blob;
 import java.util.Date;
 
 /**
@@ -13,14 +12,26 @@ public class Articulo {
     private int stock;
     private int id;
     private int alerta_stock;
-    private Date fecha_creacion;
+    private String fecha_creacion;
     private float precio;
     private byte[] imagen_articulo;
+    private String proveedor;
 
 
     public Articulo(){};
 
-    public Articulo(String nombre, int stock, int id, int alerta_stock, Date fecha_creacion, float precio, byte[] imagen_articulo) {
+//    public Articulo(String nombre, int stock, int alerta_stock, String fecha_creacion, float precio, byte[] imagen_articulo, String proveedor) {
+//        this.nombre = nombre;
+//        this.stock = stock;
+//        this.alerta_stock = alerta_stock;
+//        this.fecha_creacion = fecha_creacion;
+//        this.precio = precio;
+//        this.imagen_articulo = imagen_articulo;
+//        this.proveedor = proveedor;
+//    }
+
+
+    public Articulo(int id, String nombre, int stock, int alerta_stock, String fecha_creacion, float precio, byte[] imagen_articulo, String proveedor) {
         this.nombre = nombre;
         this.stock = stock;
         this.id = id;
@@ -28,6 +39,15 @@ public class Articulo {
         this.fecha_creacion = fecha_creacion;
         this.precio = precio;
         this.imagen_articulo = imagen_articulo;
+        this.proveedor = proveedor;
+    }
+
+    public String getProveedor() {
+        return proveedor;
+    }
+
+    public void setProveedor(String proveedor) {
+        this.proveedor = proveedor;
     }
 
     public Articulo(String nombre) {
@@ -50,7 +70,7 @@ public class Articulo {
         this.alerta_stock = alerta_stock;
     }
 
-    public void setFecha_creacion(Date fecha_creacion) {
+    public void setFecha_creacion(String fecha_creacion) {
         this.fecha_creacion = fecha_creacion;
     }
 
@@ -79,7 +99,7 @@ public class Articulo {
         return alerta_stock;
     }
 
-    public Date getFecha_creacion() {
+    public String getFecha_creacion() {
         return fecha_creacion;
     }
 

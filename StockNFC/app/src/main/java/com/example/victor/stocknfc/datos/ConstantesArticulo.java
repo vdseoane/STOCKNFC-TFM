@@ -48,4 +48,9 @@ public class ConstantesArticulo {
      * Imagen del articulo
      */
     public static final String IMAGEN_ARTICULO = "imagen_articulo";
+
+    /**
+     * Proveedor del articulo
+     */
+    public static final String PROVEEDOR_ARTICULO = "proveedor_articulo";
 }

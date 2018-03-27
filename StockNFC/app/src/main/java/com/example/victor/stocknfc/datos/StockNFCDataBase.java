@@ -34,9 +34,10 @@ public class StockNFCDataBase extends SQLiteOpenHelper {
                 ConstantesArticulo.ID_ARTICULO + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 ConstantesArticulo.NOMBRE_ARTICULO + " TEXT NOT NULL, " +
                 ConstantesArticulo.ALERTA_STOCK + " INTEGER, " +
-                ConstantesArticulo.FECHA_CREACION + " DATE NOT NULL, " +
+                ConstantesArticulo.FECHA_CREACION + " TEXT NOT NULL, " +
                 ConstantesArticulo.PRECIO_ARTICULO + " FLOAT, " +
                 ConstantesArticulo.IMAGEN_ARTICULO + " BLOB, " +
+                ConstantesArticulo.PROVEEDOR_ARTICULO + " TEXT, " +
                 ConstantesArticulo.STOCK_ARTICULO + " INTEGER NOT NULL);");
 
         //Usuario

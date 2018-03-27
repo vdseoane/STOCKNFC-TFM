@@ -51,11 +51,15 @@
         android:layout_gravity="center"
         android:layout_marginTop="20dp"/>
 
-    <Button
-        android:id="@+id/btnArticulo"
-        android:layout_width="match_parent"
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btnGuardarArticulo"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/guardar"
-        android:layout_marginTop="15dp"/>
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="bottom|right|end"
+        android:layout_marginBottom="15dp"
+        android:layout_marginEnd="15dp"
+        android:src="@drawable/add" />
 
 </LinearLayout>
