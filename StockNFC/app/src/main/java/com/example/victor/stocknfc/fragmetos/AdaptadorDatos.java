@@ -1,6 +1,7 @@
 package com.example.victor.stocknfc.fragmetos;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ public class AdaptadorDatos extends RecyclerView.Adapter<AdaptadorDatos.ViewHold
 
     private Context context;
     private ArrayList<Articulo> listaArticulos;
+
 
     public AdaptadorDatos(Context context, ArrayList<Articulo> listaArticulos) {
         this.context = context;
@@ -45,13 +47,19 @@ holder.asignarDatos(listaArticulos.get(position));
 
     public class ViewHolderDatos extends RecyclerView.ViewHolder {
         TextView nombreArticulo;
+        TextView stockArticulo;
+        CardView cv;
         public ViewHolderDatos(View itemView) {
             super(itemView);
+            cv = itemView.findViewById(R.id.cardView);
             nombreArticulo = (TextView) itemView.findViewById(R.id.nombreArticuloLista);
+            stockArticulo = (TextView) itemView.findViewById(R.id.stockArticuloLista);
+
         }
 
         public void asignarDatos(Articulo articulo) {
             nombreArticulo.setText(articulo.getNombre());
+            stockArticulo.setText(String.valueOf(articulo.getStock()));
         }
     }
 }
