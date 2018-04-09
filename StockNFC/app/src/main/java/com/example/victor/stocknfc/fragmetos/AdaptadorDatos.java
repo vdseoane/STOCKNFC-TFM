@@ -1,11 +1,13 @@
 package com.example.victor.stocknfc.fragmetos;
 
 import android.content.Context;
+import android.provider.ContactsContract;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.victor.stocknfc.R;
 
@@ -48,18 +50,23 @@ holder.asignarDatos(listaArticulos.get(position));
     public class ViewHolderDatos extends RecyclerView.ViewHolder {
         TextView nombreArticulo;
         TextView stockArticulo;
+        TextView precioArticulo;
+        ImageView imagenArticulo;
         CardView cv;
         public ViewHolderDatos(View itemView) {
             super(itemView);
             cv = itemView.findViewById(R.id.cardView);
             nombreArticulo = (TextView) itemView.findViewById(R.id.nombreArticuloLista);
             stockArticulo = (TextView) itemView.findViewById(R.id.stockArticuloLista);
-
+            precioArticulo = itemView.findViewById(R.id.precioArticuloLista);
+            imagenArticulo = itemView.findViewById(R.id.imagenArticuloLista);
         }
 
         public void asignarDatos(Articulo articulo) {
             nombreArticulo.setText(articulo.getNombre());
-            stockArticulo.setText(String.valueOf(articulo.getStock()));
+            stockArticulo.setText(context.getResources().getString(R.string.stockArticulo) + ": " + String.valueOf(articulo.getStock()));
+            precioArticulo.setText(context.getResources().getString(R.string.precioArticulo) + ": " +String.valueOf(articulo.getPrecio()));
+            imagenArticulo.setImageResource(R.drawable.user);
         }
     }
 }

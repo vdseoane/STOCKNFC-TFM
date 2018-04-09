@@ -1,40 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
         android:id="@+id/cardView"
-        app:cardElevation="10dp"
-        app:cardCornerRadius="15dp"
-        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:layout_marginBottom="5dp"
-        app:cardBackgroundColor="@color/colorAccent">
+        android:layout_marginTop="5dp"
+        app:cardBackgroundColor="@color/colorAccent"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="10dp">
+
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/hello_blank_fragment"
-            android:id="@+id/nombreArticuloLista"/>
+
+            <ImageView
+                android:id="@+id/imagenArticuloLista"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp" />
+
             <TextView
-                android:layout_below="@+id/nombreArticuloLista"
+                android:id="@+id/nombreArticuloLista"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="15dp"
+                android:layout_toRightOf="@+id/imagenArticuloLista"
                 android:text="@string/hello_blank_fragment"
-                android:id="@+id/stockArticuloLista"/>
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/stockArticuloLista"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/nombreArticuloLista"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@+id/imagenArticuloLista"
+                android:text="@string/hello_blank_fragment"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/precioArticuloLista"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/stockArticuloLista"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@+id/imagenArticuloLista"
+                android:text="@string/hello_blank_fragment"
+                android:textSize="14sp"
+                android:layout_marginBottom="5dp"/>
 
 
         </RelativeLayout>
     </android.support.v7.widget.CardView>
-
 
 
 </LinearLayout>
