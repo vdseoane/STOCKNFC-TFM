@@ -1,6 +1,8 @@
 package com.example.victor.stocknfc.fragmetos;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.provider.ContactsContract;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.example.victor.stocknfc.R;
 
 import com.example.victor.stocknfc.VOs.Articulo;
@@ -39,7 +42,7 @@ public class AdaptadorDatos extends RecyclerView.Adapter<AdaptadorDatos.ViewHold
 
     @Override
     public void onBindViewHolder(AdaptadorDatos.ViewHolderDatos holder, int position) {
-holder.asignarDatos(listaArticulos.get(position));
+        holder.asignarDatos(listaArticulos.get(position));
     }
 
     @Override
@@ -53,6 +56,7 @@ holder.asignarDatos(listaArticulos.get(position));
         TextView precioArticulo;
         ImageView imagenArticulo;
         CardView cv;
+
         public ViewHolderDatos(View itemView) {
             super(itemView);
             cv = itemView.findViewById(R.id.cardView);
@@ -65,8 +69,11 @@ holder.asignarDatos(listaArticulos.get(position));
         public void asignarDatos(Articulo articulo) {
             nombreArticulo.setText(articulo.getNombre());
             stockArticulo.setText(context.getResources().getString(R.string.stockArticulo) + ": " + String.valueOf(articulo.getStock()));
-            precioArticulo.setText(context.getResources().getString(R.string.precioArticulo) + ": " +String.valueOf(articulo.getPrecio()));
-            imagenArticulo.setImageResource(R.drawable.user);
+            precioArticulo.setText(context.getResources().getString(R.string.precioArticulo) + ": " + String.valueOf(articulo.getPrecio()));
+            if (articulo.getImagen_articulo() != null) {
+                Bitmap imagenArtBitmap = BitmapFactory.decodeByteArray(articulo.getImagen_articulo(), 0, articulo.getImagen_articulo().length);
+                imagenArticulo.setImageBitmap(imagenArtBitmap);
+            }
         }
     }
 }

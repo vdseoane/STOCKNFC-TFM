@@ -3,6 +3,9 @@ package com.example.victor.stocknfc.fragmetos;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -22,6 +25,8 @@ import com.example.victor.stocknfc.VOs.Articulo;
 import com.example.victor.stocknfc.datos.ArticuloDB;
 import com.example.victor.stocknfc.datos.StockNFCDataBase;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -111,7 +116,22 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
     }
 
     private Articulo obtenerDatosGuardar() throws ParseException {
-        return new Articulo(0, nombreArticulo.getText().toString(), Integer.parseInt(stockArticulo.getText().toString()), Integer.parseInt(alertaArticulo.getText().toString()), fechaArticulo.getText().toString(), Float.parseFloat(precioArticulo.getText().toString()), null, proveedorArticulo.getText().toString());
+        String nombre= nombreArticulo.getText().toString();
+        int stock = Integer.parseInt(stockArticulo.getText().toString());
+        int alerta = Integer.parseInt(alertaArticulo.getText().toString());
+        String fecha = fechaArticulo.getText().toString();
+        float precio = Float.parseFloat(precioArticulo.getText().toString());
+        String proveedor = proveedorArticulo.getText().toString();
+
+        //Obtenemos la imagen
+        BitmapDrawable bitmapDrawable = ((BitmapDrawable) imgArticulo.getDrawable());
+        Bitmap bitmap = bitmapDrawable .getBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] imageInByte = stream.toByteArray();
+
+
+        return new Articulo(0, nombre, stock, alerta, fecha, precio, imageInByte, proveedor);
     }
 
     private void abrirGaleria() {
@@ -122,6 +142,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         if(requestCode == OBTENER_IMAGEN){
             imgUri = data.getData();
+            imgArticulo.setBackground(null);
             imgArticulo.setImageURI(imgUri);
         }
     }
