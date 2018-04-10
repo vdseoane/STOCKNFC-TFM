@@ -4,6 +4,7 @@ package com.example.victor.stocknfc.fragmetos;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.Image;
 import android.net.Uri;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 import com.example.victor.stocknfc.Dialogo;
 import com.example.victor.stocknfc.R;
 import com.example.victor.stocknfc.VOs.Articulo;
+import com.example.victor.stocknfc.Validaciones;
 import com.example.victor.stocknfc.datos.ArticuloDB;
 import com.example.victor.stocknfc.datos.StockNFCDataBase;
 
@@ -37,6 +39,9 @@ import java.util.Date;
  */
 public class Fragmento_Articulo extends android.support.v4.app.Fragment {
 
+    Validaciones validaciones = new Validaciones();
+    Dialogo dialogo;
+
     private StockNFCDataBase bd;
     ArticuloDB bdArticulo;
 
@@ -51,6 +56,16 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
     FloatingActionButton btnGuardarArticulo;
     SimpleDateFormat fechaFormat = new SimpleDateFormat("dd-MM-yyyy");
     Date fechaArticuloDate = new Date();
+
+
+    //Datos articulo
+    String nombre;
+    int stock;
+    int alerta;
+    String fecha;
+    float precio;
+    String proveedor;
+    byte[] imageInByte;
 
     private static final int OBTENER_IMAGEN = 100;
 
@@ -91,10 +106,9 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         btnGuardarArticulo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Articulo articulo;
+                Articulo articulo = new Articulo();
                 try {
-                    articulo = obtenerDatosGuardar();
-                    guardarArticulo(articulo);
+                    guardarArticulo(comprobarArticuloCorrecto(articulo));
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -115,20 +129,20 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         }
     }
 
-    private Articulo obtenerDatosGuardar() throws ParseException {
-        String nombre= nombreArticulo.getText().toString();
-        int stock = Integer.parseInt(stockArticulo.getText().toString());
-        int alerta = Integer.parseInt(alertaArticulo.getText().toString());
-        String fecha = fechaArticulo.getText().toString();
-        float precio = Float.parseFloat(precioArticulo.getText().toString());
-        String proveedor = proveedorArticulo.getText().toString();
+    private Articulo obtenerDatosGuardar(Articulo articulo) throws ParseException {
+        articulo.setNombre(nombreArticulo.getText().toString());
+        articulo.setStock(Integer.parseInt(stockArticulo.getText().toString()));
+//        alerta = Integer.parseInt(alertaArticulo.getText().toString());
+        articulo.setFechaCreacion(fechaArticulo.getText().toString());
+//        precio = Float.parseFloat(precioArticulo.getText().toString());
+        articulo.setProveedor(proveedorArticulo.getText().toString());
 
         //Obtenemos la imagen
-        BitmapDrawable bitmapDrawable = ((BitmapDrawable) imgArticulo.getDrawable());
-        Bitmap bitmap = bitmapDrawable .getBitmap();
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        byte[] imageInByte = stream.toByteArray();
+//        BitmapDrawable bitmapDrawable = ((BitmapDrawable) imgArticulo.getDrawable());
+//        Bitmap bitmap = bitmapDrawable .getBitmap();
+//        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+//        imageInByte = stream.toByteArray();
 
 
         return new Articulo(0, nombre, stock, alerta, fecha, precio, imageInByte, proveedor);
@@ -156,5 +170,48 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         imgArticulo = getView().findViewById(R.id.imgArticulo);
         fechaArticulo = getView().findViewById(R.id.fechaArticulo);
         btnGuardarArticulo = getView().findViewById(R.id.btnGuardarArticulo);
+    }
+
+    private Articulo comprobarArticuloCorrecto(Articulo articulo) throws ParseException {
+        if(validaciones.textoNoNulo(nombreArticulo.getText().toString())){
+            dialogo = new Dialogo(getContext(), getContext().getResources().getString(R.string.msnNombreNulo));
+            dialogo.getBuilder().create();
+        }else if(validaciones.textoNoNulo(stockArticulo.getText().toString())){
+            dialogo = new Dialogo(getContext(), getContext().getResources().getString(R.string.msnStockNulo));
+            dialogo.getBuilder().create();
+        }else if(validaciones.numeroNegativo(Integer.parseInt(stockArticulo.getText().toString()))){
+            dialogo = new Dialogo(getContext(), getContext().getResources().getString(R.string.msnStockNegativo));
+            dialogo.getBuilder().create();
+        }else {
+            //Alerta
+            if (!validaciones.textoNoNulo(alertaArticulo.getText().toString())) {
+                dialogo = new Dialogo(getContext(), getContext().getResources().getString(R.string.msnAlertaNulo));
+                dialogo.getBuilder().create();
+                articulo.setAlertaStock(-1);
+            }else articulo.setAlertaStock(Integer.parseInt(alertaArticulo.getText().toString()));
+            //Precio
+            if (!validaciones.textoNoNulo(precioArticulo.getText().toString())){
+                articulo.setPrecio(0);
+            } else articulo.setPrecio(Float.parseFloat(precioArticulo.getText().toString()));
+
+            //Imagen
+            //Obtenemos la imagen
+            BitmapDrawable bitmapDrawable = ((BitmapDrawable) imgArticulo.getDrawable());
+            Bitmap bitmap = bitmapDrawable .getBitmap();
+            if(validaciones.esNulo(bitmap)){
+                //Metemos emoticono
+                Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                articulo.setImagenArticulo(stream.toByteArray());
+            }else{
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                articulo.setImagenArticulo(stream.toByteArray());
+            }
+
+            return obtenerDatosGuardar(articulo);
+        }
+return articulo;
     }
 }

@@ -70,8 +70,8 @@ public class AdaptadorDatos extends RecyclerView.Adapter<AdaptadorDatos.ViewHold
             nombreArticulo.setText(articulo.getNombre());
             stockArticulo.setText(context.getResources().getString(R.string.stockArticulo) + ": " + String.valueOf(articulo.getStock()));
             precioArticulo.setText(context.getResources().getString(R.string.precioArticulo) + ": " + String.valueOf(articulo.getPrecio()));
-            if (articulo.getImagen_articulo() != null) {
-                Bitmap imagenArtBitmap = BitmapFactory.decodeByteArray(articulo.getImagen_articulo(), 0, articulo.getImagen_articulo().length);
+            if (articulo.getImagenArticulo() != null) {
+                Bitmap imagenArtBitmap = BitmapFactory.decodeByteArray(articulo.getImagenArticulo(), 0, articulo.getImagenArticulo().length);
                 imagenArticulo.setImageBitmap(imagenArtBitmap);
             }
         }

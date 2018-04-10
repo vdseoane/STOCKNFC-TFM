@@ -102,9 +102,9 @@ public class ArticuloDB extends StockNFCDataBase{
         ContentValues values = new ContentValues();
         values.put(ConstantesArticulo.NOMBRE_ARTICULO, articulo.getNombre());
         values.put(ConstantesArticulo.STOCK_ARTICULO, articulo.getStock());
-        values.put(ConstantesArticulo.ALERTA_STOCK, articulo.getAlerta_stock());
-        values.put(ConstantesArticulo.FECHA_CREACION, articulo.getFecha_creacion());
-        values.put(ConstantesArticulo.IMAGEN_ARTICULO, articulo.getImagen_articulo());
+        values.put(ConstantesArticulo.ALERTA_STOCK, articulo.getAlertaStock());
+        values.put(ConstantesArticulo.FECHA_CREACION, articulo.getFechaCreacion());
+        values.put(ConstantesArticulo.IMAGEN_ARTICULO, articulo.getImagenArticulo());
         values.put(ConstantesArticulo.PROVEEDOR_ARTICULO, articulo.getStock());
         values.put(ConstantesArticulo.PRECIO_ARTICULO, articulo.getPrecio());
         long toret = db.insert(ConstantesArticulo.ARTICULO_TABLE_NAME, null, values);

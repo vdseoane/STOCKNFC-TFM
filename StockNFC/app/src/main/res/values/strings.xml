@@ -31,4 +31,8 @@
     <string name="fechaArticulo">Fecha</string>
     <string name="proveedorArticulo">Proveedor</string>
     <string name="guardar">Guardar</string>
+    <string name="msnNombreNulo">El artículo debe tener un nombre</string>
+    <string name="msnStockNulo">El stock del producto no puede estar vacío</string>
+    <string name="msnStockNegativo">El stock del producto debe ser igual o mayor a cero</string>
+    <string name="msnAlertaNulo">El atrobuto \"Alerta\" no tiene valor, se entenderá como desactivada</string>
 </resources>
