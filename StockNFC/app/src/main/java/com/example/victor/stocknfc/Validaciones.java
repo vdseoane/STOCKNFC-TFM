@@ -10,10 +10,10 @@ public class Validaciones {
 
     public boolean textoNoNulo(String texto) {
         if (texto != null)
-            if (!texto.isEmpty())
+            if (texto.isEmpty())
                 return true;
             else return false;
-        else return false;
+        else return true;
     }
 
     public boolean longitudAdecuada(String texto, int longitud) {

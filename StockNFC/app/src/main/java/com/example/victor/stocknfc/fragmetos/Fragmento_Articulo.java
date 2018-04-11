@@ -59,6 +59,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
 
 
     //Datos articulo
+    Articulo articulo = new Articulo();
     String nombre;
     int stock;
     int alerta;
@@ -106,9 +107,11 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         btnGuardarArticulo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Articulo articulo = new Articulo();
                 try {
-                    guardarArticulo(comprobarArticuloCorrecto(articulo));
+                    if(comprobarArticuloCorrecto()){
+                        obtenerDatosGuardar();
+                        guardarArticulo();
+                    }
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -116,7 +119,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         });
     }
 
-    private void guardarArticulo(Articulo articulo) {
+    private void guardarArticulo() {
         bdArticulo = new ArticuloDB(getContext());
 
         long inserccion = bdArticulo.insertarArticulo(bdArticulo.getWritableDatabase(), articulo);
@@ -129,7 +132,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         }
     }
 
-    private Articulo obtenerDatosGuardar(Articulo articulo) throws ParseException {
+    private void obtenerDatosGuardar() throws ParseException {
         articulo.setNombre(nombreArticulo.getText().toString());
         articulo.setStock(Integer.parseInt(stockArticulo.getText().toString()));
 //        alerta = Integer.parseInt(alertaArticulo.getText().toString());
@@ -143,9 +146,6 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
 //        ByteArrayOutputStream stream = new ByteArrayOutputStream();
 //        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
 //        imageInByte = stream.toByteArray();
-
-
-        return new Articulo(0, nombre, stock, alerta, fecha, precio, imageInByte, proveedor);
     }
 
     private void abrirGaleria() {
@@ -172,46 +172,48 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         btnGuardarArticulo = getView().findViewById(R.id.btnGuardarArticulo);
     }
 
-    private Articulo comprobarArticuloCorrecto(Articulo articulo) throws ParseException {
+    private boolean comprobarArticuloCorrecto() throws ParseException {
         if(validaciones.textoNoNulo(nombreArticulo.getText().toString())){
             dialogo = new Dialogo(getContext(), getContext().getResources().getString(R.string.msnNombreNulo));
-            dialogo.getBuilder().create();
+            dialogo.getBuilder().create().show();
+            return false;
         }else if(validaciones.textoNoNulo(stockArticulo.getText().toString())){
             dialogo = new Dialogo(getContext(), getContext().getResources().getString(R.string.msnStockNulo));
-            dialogo.getBuilder().create();
+            dialogo.getBuilder().create().show();
+            return false;
         }else if(validaciones.numeroNegativo(Integer.parseInt(stockArticulo.getText().toString()))){
             dialogo = new Dialogo(getContext(), getContext().getResources().getString(R.string.msnStockNegativo));
-            dialogo.getBuilder().create();
+            dialogo.getBuilder().create().show();
+            return  false;
         }else {
             //Alerta
-            if (!validaciones.textoNoNulo(alertaArticulo.getText().toString())) {
-                dialogo = new Dialogo(getContext(), getContext().getResources().getString(R.string.msnAlertaNulo));
-                dialogo.getBuilder().create();
+            if (validaciones.textoNoNulo(alertaArticulo.getText().toString())) {
+//                dialogo = new Dialogo(getContext(), getContext().getResources().getString(R.string.msnAlertaNulo));
+//                dialogo.getBuilder().create().show();
                 articulo.setAlertaStock(-1);
             }else articulo.setAlertaStock(Integer.parseInt(alertaArticulo.getText().toString()));
             //Precio
-            if (!validaciones.textoNoNulo(precioArticulo.getText().toString())){
+            if (validaciones.textoNoNulo(precioArticulo.getText().toString())){
                 articulo.setPrecio(0);
             } else articulo.setPrecio(Float.parseFloat(precioArticulo.getText().toString()));
 
             //Imagen
             //Obtenemos la imagen
             BitmapDrawable bitmapDrawable = ((BitmapDrawable) imgArticulo.getDrawable());
-            Bitmap bitmap = bitmapDrawable .getBitmap();
-            if(validaciones.esNulo(bitmap)){
+
+            if(validaciones.esNulo(bitmapDrawable)){
                 //Metemos emoticono
                 Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user);
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
                 articulo.setImagenArticulo(stream.toByteArray());
             }else{
+                Bitmap bitmap = bitmapDrawable .getBitmap();
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
                 articulo.setImagenArticulo(stream.toByteArray());
             }
-
-            return obtenerDatosGuardar(articulo);
+            return true;
         }
-return articulo;
     }
 }
