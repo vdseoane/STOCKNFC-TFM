@@ -1,10 +1,13 @@
 package com.example.victor.stocknfc.fragmetos;
 
 
+import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -13,6 +16,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
@@ -21,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.victor.stocknfc.Dialogo;
@@ -73,7 +78,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
     byte[] imageInByte;
 
     //Datos obtencion imagen
-    private static final int ACTIVITY_SELECT_IMAGE = 1020, ACTIVITY_SELECT_FROM_CAMERA = 1040, ACTIVITY_SHARE =1030;
+    private static final int ACTIVITY_SELECT_IMAGE = 1020, ACTIVITY_SELECT_FROM_CAMERA = 1040, ACTIVITY_SHARE =1030, MY_CAMERA_PERMISSION_CODE = 1050;
     private static String APP_DIRECTORY = "MyPictures/";
     private static String MEDIA_DIRECTORY = APP_DIRECTORY + "PictureApp";
     private AlertDialog photoDialog;
@@ -125,11 +130,8 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
     private void crearOnClicks() {
         imgArticulo.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v){
-                if(!getPhotoDialog().isShowing())
-                    getPhotoDialog().show();
-            }
-        });
-
+                    seleccionarImagenDialogo();
+        }});
 
         btnGuardarArticulo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,56 +148,57 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         });
     }
 
-    private AlertDialog getPhotoDialog() {
-        if (photoDialog == null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(
-                    getContext());
-            builder.setTitle(R.string.obtenerImagen);
-            builder.setPositiveButton(R.string.camara, new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Intent intent = new Intent(
-                            "android.media.action.IMAGE_CAPTURE");
-                    File photo = null;
-                    try {
-                        // place where to store camera taken picture
-                        photo = PhotoUtils.createTemporaryFile("picture", ".jpg", getContext());
-                        photo.delete();
-                    } catch (Exception e) {
-                        Log.v(getClass().getSimpleName(),
-                                "Can't create file to take picture!");
+    private void seleccionarImagenDialogo() {
+        try {
+            PackageManager pm = getActivity().getPackageManager();
+            int hasPerm = pm.checkPermission(Manifest.permission.CAMERA,  getActivity().getPackageName());
+            if (hasPerm == PackageManager.PERMISSION_GRANTED) {
+                final CharSequence[] options = {"Take Photo", "Choose From Gallery","Cancel"};
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
+                builder.setTitle("Select Option");
+                builder.setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+                        if (options[item].equals("Take Photo")) {
+                            dialog.dismiss();
+                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            startActivityForResult(intent, ACTIVITY_SELECT_FROM_CAMERA);
+                        } else if (options[item].equals("Choose From Gallery")) {
+                            dialog.dismiss();
+                            Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            startActivityForResult(pickPhoto, ACTIVITY_SELECT_IMAGE);
+                        } else if (options[item].equals("Cancel")) {
+                            dialog.dismiss();
+                        }
                     }
-                    mImageUri = Uri.fromFile(photo);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
-                    startActivityForResult(intent, ACTIVITY_SELECT_FROM_CAMERA);
-                }
-            });
-            builder.setNegativeButton(R.string.galeria, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                    galleryIntent.setType("image/*");
-                    startActivityForResult(galleryIntent, ACTIVITY_SELECT_IMAGE);
-                }
+                });
+                builder.show();
+            } else{
+                if (getContext().checkSelfPermission(
+                        Manifest.permission.CAMERA)
+                        != PackageManager.PERMISSION_GRANTED) {
 
-            });
-            photoDialog = builder.create();
+                    getActivity().requestPermissions(new String[]{Manifest.permission.CAMERA},
+                            MY_CAMERA_PERMISSION_CODE);
+                }
+            }
+        } catch (Exception e) {
+            Toast.makeText(getContext(), "Camera Permission error", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
         }
-        return photoDialog;
-
     }
 
-    public static File createTemporaryFile(String part, String ext,
-                                           Context myContext) throws Exception {
-        File tempDir = myContext.getExternalCacheDir();
-        tempDir = new File(tempDir.getAbsolutePath() + "/temp/");
-        if (!tempDir.exists()) {
-            tempDir.mkdir();
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_CAMERA_PERMISSION_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(pickPhoto, ACTIVITY_SELECT_IMAGE);
+            } else {
+                Toast.makeText(getContext(), "camera permission denied", Toast.LENGTH_LONG).show();
+            }
         }
-        return File.createTempFile(part, ext, tempDir);
     }
-
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -214,7 +217,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         }*/
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+/*    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ACTIVITY_SELECT_IMAGE && resultCode == getActivity().RESULT_OK) {
             mImageUri = data.getData();
@@ -223,7 +226,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
                 && resultCode == getActivity().RESULT_OK) {
             getImage(mImageUri);
         }
-    }
+    }*/
 
     public void getImage(Uri uri) {
         Bitmap bounds = photoUtils.getImage(uri);
@@ -285,14 +288,19 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         Intent abrirGaleria = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
         startActivityForResult(abrirGaleria, OBTENER_IMAGEN);
     }
-
+*/
     public void onActivityResult(int requestCode, int resultCode, Intent data){
-        if(requestCode == OBTENER_IMAGEN){
+        if(requestCode == ACTIVITY_SELECT_IMAGE && resultCode == getActivity().RESULT_OK){
             imgUri = data.getData();
             imgArticulo.setBackground(null);
             imgArticulo.setImageURI(imgUri);
+        }else if (requestCode == ACTIVITY_SELECT_FROM_CAMERA
+                && resultCode == getActivity().RESULT_OK) {
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            imgArticulo.setBackground(null);
+            imgArticulo.setImageBitmap(photo);
         }
-    }*/
+    }
 
     private void obtenerTextViews() {
         nombreArticulo = getView().findViewById(R.id.nombreArticulo);
