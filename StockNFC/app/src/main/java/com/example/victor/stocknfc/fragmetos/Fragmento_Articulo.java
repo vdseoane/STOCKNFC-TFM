@@ -1,7 +1,9 @@
 package com.example.victor.stocknfc.fragmetos;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,6 +15,7 @@ import android.app.Fragment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +32,7 @@ import com.example.victor.stocknfc.datos.StockNFCDataBase;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -68,13 +72,20 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
     String proveedor;
     byte[] imageInByte;
 
-    private static final int OBTENER_IMAGEN = 100;
+    //Datos obtencion imagen
+    private static final int ACTIVITY_SELECT_IMAGE = 1020, ACTIVITY_SELECT_FROM_CAMERA = 1040, ACTIVITY_SHARE =1030;
+    private static String APP_DIRECTORY = "MyPictures/";
+    private static String MEDIA_DIRECTORY = APP_DIRECTORY + "PictureApp";
+    private AlertDialog photoDialog;
+    private PhotoUtils photoUtils;
+    private Uri mImageUri;
+    private String myPath;
+
 
 
     public Fragmento_Articulo() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,20 +97,36 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+//Fecha del día de hoy para el artículo
         String fechaArt = fechaFormat.format(fechaArticuloDate);
-
+//Obtenemos los textviewa
         obtenerTextViews();
+        //creamos los onClicks
         crearOnClicks();
 
         fechaArticulo.setText(fechaArt);
+
+        // Procesado de la obtención de la imagen
+/*        Intent intent = getActivity().getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
+        if (Intent.ACTION_SEND.equals(action) && type != null) {
+            if ("text/plain".equals(type)) {
+                //fromShare = true;
+            } else if (type.startsWith("image/")) {
+                //fromShare = true;
+                mImageUri = (Uri) intent
+                        .getParcelableExtra(Intent.EXTRA_STREAM);
+                getImage(mImageUri);
+            }
+        }*/
     }
 
     private void crearOnClicks() {
         imgArticulo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                abrirGaleria();
+            public void onClick(View v){
+                if(!getPhotoDialog().isShowing())
+                    getPhotoDialog().show();
             }
         });
 
@@ -118,6 +145,112 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
             }
         });
     }
+
+    private AlertDialog getPhotoDialog() {
+        if (photoDialog == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(
+                    getContext());
+            builder.setTitle(R.string.obtenerImagen);
+            builder.setPositiveButton(R.string.camara, new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(
+                            "android.media.action.IMAGE_CAPTURE");
+                    File photo = null;
+                    try {
+                        // place where to store camera taken picture
+                        photo = PhotoUtils.createTemporaryFile("picture", ".jpg", getContext());
+                        photo.delete();
+                    } catch (Exception e) {
+                        Log.v(getClass().getSimpleName(),
+                                "Can't create file to take picture!");
+                    }
+                    mImageUri = Uri.fromFile(photo);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+                    startActivityForResult(intent, ACTIVITY_SELECT_FROM_CAMERA);
+                }
+            });
+            builder.setNegativeButton(R.string.galeria, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                    galleryIntent.setType("image/*");
+                    startActivityForResult(galleryIntent, ACTIVITY_SELECT_IMAGE);
+                }
+
+            });
+            photoDialog = builder.create();
+        }
+        return photoDialog;
+
+    }
+
+    public static File createTemporaryFile(String part, String ext,
+                                           Context myContext) throws Exception {
+        File tempDir = myContext.getExternalCacheDir();
+        tempDir = new File(tempDir.getAbsolutePath() + "/temp/");
+        if (!tempDir.exists()) {
+            tempDir.mkdir();
+        }
+        return File.createTempFile(part, ext, tempDir);
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (mImageUri != null)
+            outState.putString("Uri", mImageUri.toString());
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+/*        if (savedInstanceState.containsKey("Uri")) {
+            mImageUri = Uri.parse(savedInstanceState.getString("Uri"));
+        }*/
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ACTIVITY_SELECT_IMAGE && resultCode == getActivity().RESULT_OK) {
+            mImageUri = data.getData();
+            getImage(mImageUri);
+        } else if (requestCode == ACTIVITY_SELECT_FROM_CAMERA
+                && resultCode == getActivity().RESULT_OK) {
+            getImage(mImageUri);
+        }
+    }
+
+    public void getImage(Uri uri) {
+        Bitmap bounds = photoUtils.getImage(uri);
+        if (bounds != null) {
+            imgArticulo.setImageBitmap(bounds);
+        } else {
+            //showErrorToast();
+
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private void guardarArticulo() {
         bdArticulo = new ArticuloDB(getContext());
@@ -148,7 +281,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
 //        imageInByte = stream.toByteArray();
     }
 
-    private void abrirGaleria() {
+/*    private void abrirGaleria() {
         Intent abrirGaleria = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
         startActivityForResult(abrirGaleria, OBTENER_IMAGEN);
     }
@@ -159,7 +292,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
             imgArticulo.setBackground(null);
             imgArticulo.setImageURI(imgUri);
         }
-    }
+    }*/
 
     private void obtenerTextViews() {
         nombreArticulo = getView().findViewById(R.id.nombreArticulo);
@@ -188,8 +321,6 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         }else {
             //Alerta
             if (validaciones.textoNoNulo(alertaArticulo.getText().toString())) {
-//                dialogo = new Dialogo(getContext(), getContext().getResources().getString(R.string.msnAlertaNulo));
-//                dialogo.getBuilder().create().show();
                 articulo.setAlertaStock(-1);
             }else articulo.setAlertaStock(Integer.parseInt(alertaArticulo.getText().toString()));
             //Precio
@@ -200,14 +331,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
             //Imagen
             //Obtenemos la imagen
             BitmapDrawable bitmapDrawable = ((BitmapDrawable) imgArticulo.getDrawable());
-
-            if(validaciones.esNulo(bitmapDrawable)){
-                //Metemos emoticono
-                Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user);
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                articulo.setImagenArticulo(stream.toByteArray());
-            }else{
+            if(!validaciones.esNulo(bitmapDrawable)){
                 Bitmap bitmap = bitmapDrawable .getBitmap();
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);

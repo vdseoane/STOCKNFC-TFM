@@ -69,10 +69,16 @@ public class AdaptadorDatos extends RecyclerView.Adapter<AdaptadorDatos.ViewHold
         public void asignarDatos(Articulo articulo) {
             nombreArticulo.setText(articulo.getNombre());
             stockArticulo.setText(context.getResources().getString(R.string.stockArticulo) + ": " + String.valueOf(articulo.getStock()));
-            precioArticulo.setText(context.getResources().getString(R.string.precioArticulo) + ": " + String.valueOf(articulo.getPrecio()));
+            if(articulo.getPrecio() > -1) {
+                precioArticulo.setText(context.getResources().getString(R.string.precioArticulo) + ": " + String.valueOf(articulo.getPrecio()));
+            }else{
+                precioArticulo.setText(context.getResources().getString(R.string.precioArticulo) + ": " + context.getResources().getString(R.string.noAplica));
+            }
             if (articulo.getImagenArticulo() != null) {
                 Bitmap imagenArtBitmap = BitmapFactory.decodeByteArray(articulo.getImagenArticulo(), 0, articulo.getImagenArticulo().length);
                 imagenArticulo.setImageBitmap(imagenArtBitmap);
+            }else{
+                imagenArticulo.setImageResource(R.drawable.trolley);
             }
         }
     }

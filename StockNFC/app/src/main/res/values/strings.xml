@@ -35,4 +35,8 @@
     <string name="msnStockNulo">El stock del producto no puede estar vacío</string>
     <string name="msnStockNegativo">El stock del producto debe ser igual o mayor a cero</string>
     <string name="msnAlertaNulo">El atrobuto \"Alerta\" no tiene valor, se entenderá como desactivada</string>
+    <string name="noAplica">N/A</string>
+    <string name="obtenerImagen">Obtener imagen de:</string>
+    <string name="camara">Cámara</string>
+    <string name="galeria">Galería</string>
 </resources>
