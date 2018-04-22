@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -114,12 +116,13 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         toolbarAticulo = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbarArticulo);
         toolbarAticulo.setTitle("Articulo");
         toolbarAticulo.inflateMenu(R.menu.menu_articulo);
-
-//Quitamos el menu lateral
+        Drawable drawable = getContext().getDrawable(R.drawable.left_arrow);
+        toolbarAticulo.setNavigationIcon(drawable);
+        //Quitamos el menu lateral
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
-//Fecha del día de hoy para el artículo
+        //Fecha del día de hoy para el artículo
         String fechaArt = fechaFormat.format(fechaArticuloDate);
-//Obtenemos los textviewa
+        //Obtenemos los textviews
         obtenerTextViews();
         //creamos los onClicks
         crearOnClicks();
@@ -169,6 +172,13 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
                         Toast.makeText(getContext(), "Boton modificar pulsado", Toast.LENGTH_SHORT).show();
                 }
                 return true;
+            }
+        });
+
+        toolbarAticulo.setNavigationOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                getFragmentManager().beginTransaction().replace(R.id.contenedorFragments, new ListaArticulos()).commit();
             }
         });
     }
@@ -232,6 +242,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
 
         if (inserccion != -1) {
             Toast.makeText(getContext(), "Articulo añadido correctamente", Toast.LENGTH_LONG).show();
+            getFragmentManager().beginTransaction().replace(R.id.contenedorFragments, new ListaArticulos()).commit();
         } else {
             Dialogo dialogo = new Dialogo(getContext(), "Ha habido un error al insertar el artículo");
             dialogo.getDialogo().show();
@@ -293,5 +304,10 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
             }
             return true;
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 }
