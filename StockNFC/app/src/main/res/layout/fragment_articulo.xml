@@ -5,6 +5,7 @@
     android:orientation="vertical"
     tools:context="com.example.victor.stocknfc.fragmetos.Fragmento_Articulo">
 
+    <include layout="@layout/toolbar_articulo"></include>
     <!-- TODO: Update blank fragment layout -->
 
     <EditText

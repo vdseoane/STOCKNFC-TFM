@@ -39,4 +39,7 @@
     <string name="obtenerImagen">Obtener imagen de:</string>
     <string name="camara">Cámara</string>
     <string name="galeria">Galería</string>
+    <string name="borrar">Borrar</string>
+    <string name="modificar">Modificar</string>
+    <string name="atras">Atras</string>
 </resources>
