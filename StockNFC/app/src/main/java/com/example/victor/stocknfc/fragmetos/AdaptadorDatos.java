@@ -1,9 +1,14 @@
 package com.example.victor.stocknfc.fragmetos;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -76,10 +81,12 @@ public class AdaptadorDatos extends RecyclerView.Adapter<AdaptadorDatos.ViewHold
                     Toast.makeText(context, "Elemento clickado: "+ getAdapterPosition(), Toast.LENGTH_SHORT).show();
                     Articulo articuloObtenido = listaArticulos.get(getAdapterPosition());
                     Toast.makeText(context, "Id elemento clickado: "+ articuloObtenido.getId(), Toast.LENGTH_SHORT).show();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("articulo de la lista", String.valueOf(articuloObtenido.getId()));
+                    fragmento_articulo.setArguments(bundle);
 
-                    //fragmento_articulo.articuloLista(articuloObtenido);
-
-
+                    FragmentManager manager = ((AppCompatActivity)context).getSupportFragmentManager();
+                    manager.beginTransaction().replace(R.id.contenedorFragments, fragmento_articulo).commit();
                 }
             });
         }

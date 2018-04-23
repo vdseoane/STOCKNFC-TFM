@@ -112,6 +112,8 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         setHasOptionsMenu(true);
+
+        String texto = getArguments().getString("articulo de la lista");
         return inflater.inflate(R.layout.fragment_articulo, container, false);
     }
 
