@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.victor.stocknfc.R;
 
@@ -23,6 +24,8 @@ import java.util.ArrayList;
  */
 
 public class AdaptadorDatos extends RecyclerView.Adapter<AdaptadorDatos.ViewHolderDatos> {
+
+    Fragmento_Articulo fragmento_articulo = new Fragmento_Articulo();
 
     private Context context;
     private ArrayList<Articulo> listaArticulos;
@@ -55,6 +58,7 @@ public class AdaptadorDatos extends RecyclerView.Adapter<AdaptadorDatos.ViewHold
         TextView stockArticulo;
         TextView precioArticulo;
         ImageView imagenArticulo;
+       TextView idArticulo;
         CardView cv;
 
         public ViewHolderDatos(View itemView) {
@@ -64,12 +68,26 @@ public class AdaptadorDatos extends RecyclerView.Adapter<AdaptadorDatos.ViewHold
             stockArticulo = (TextView) itemView.findViewById(R.id.stockArticuloLista);
             precioArticulo = itemView.findViewById(R.id.precioArticuloLista);
             imagenArticulo = itemView.findViewById(R.id.imagenArticuloLista);
+           idArticulo = (TextView) itemView.findViewById(R.id.idArticuloLista);
+
+            cv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(context, "Elemento clickado: "+ getAdapterPosition(), Toast.LENGTH_SHORT).show();
+                    Articulo articuloObtenido = listaArticulos.get(getAdapterPosition());
+                    Toast.makeText(context, "Id elemento clickado: "+ articuloObtenido.getId(), Toast.LENGTH_SHORT).show();
+
+                    //fragmento_articulo.articuloLista(articuloObtenido);
+
+
+                }
+            });
         }
 
         public void asignarDatos(Articulo articulo) {
             nombreArticulo.setText(articulo.getNombre());
             stockArticulo.setText(context.getResources().getString(R.string.stockArticulo) + ": " + String.valueOf(articulo.getStock()));
-            if(articulo.getPrecio() > -1) {
+            if(articulo.getPrecio() > 0.0) {
                 precioArticulo.setText(context.getResources().getString(R.string.precioArticulo) + ": " + String.valueOf(articulo.getPrecio()));
             }else{
                 precioArticulo.setText(context.getResources().getString(R.string.precioArticulo) + ": " + context.getResources().getString(R.string.noAplica));
@@ -80,6 +98,9 @@ public class AdaptadorDatos extends RecyclerView.Adapter<AdaptadorDatos.ViewHold
             }else{
                 imagenArticulo.setImageResource(R.drawable.trolley);
             }
+            idArticulo.setText(String.valueOf(articulo.getId()));
         }
     }
+
+
 }

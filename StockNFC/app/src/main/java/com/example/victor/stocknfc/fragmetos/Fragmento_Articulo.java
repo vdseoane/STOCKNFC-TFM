@@ -34,6 +34,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -42,6 +43,7 @@ import android.widget.Toolbar;
 
 import com.example.victor.stocknfc.Dialogo;
 import com.example.victor.stocknfc.R;
+import com.example.victor.stocknfc.Utilidades;
 import com.example.victor.stocknfc.VOs.Articulo;
 import com.example.victor.stocknfc.Validaciones;
 import com.example.victor.stocknfc.datos.ArticuloDB;
@@ -62,6 +64,9 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
 
     Validaciones validaciones = new Validaciones();
     Dialogo dialogo;
+
+    //Utilidades
+    Utilidades utilidades = new Utilidades();
 
     //Toolbar
     android.support.v7.widget.Toolbar toolbarAticulo;
@@ -87,6 +92,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
 
     //Datos articulo
     Articulo articulo = new Articulo();
+    Articulo articuloLista;
     String nombre;
     int stock;
     int alerta;
@@ -115,7 +121,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         //Toolbar
         toolbarAticulo = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbarArticulo);
         toolbarAticulo.setTitle("Articulo");
-        toolbarAticulo.inflateMenu(R.menu.menu_articulo);
+        toolbarAticulo.inflateMenu(R.menu.menu_articulo_anhadir);
         Drawable drawable = getContext().getDrawable(R.drawable.left_arrow);
         toolbarAticulo.setNavigationIcon(drawable);
         //Quitamos el menu lateral
@@ -138,7 +144,6 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         proveedorArticulo = getView().findViewById(R.id.proveedorArticulo);
         imgArticulo = getView().findViewById(R.id.imgArticulo);
         fechaArticulo = getView().findViewById(R.id.fechaArticulo);
-        btnGuardarArticulo = getView().findViewById(R.id.btnGuardarArticulo);
     }
 
     private void crearOnClicks() {
@@ -148,34 +153,30 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
             }
         });
 
-        btnGuardarArticulo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    if (comprobarArticuloCorrecto()) {
-                        obtenerDatosGuardar();
-                        guardarArticulo();
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
         toolbarAticulo.setOnMenuItemClickListener(new android.support.v7.widget.Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.borrarArticuloMenu:
                         Toast.makeText(getContext(), "Boton borrar pulsado", Toast.LENGTH_SHORT).show();
                     case R.id.modificarArticuloMenu:
                         Toast.makeText(getContext(), "Boton modificar pulsado", Toast.LENGTH_SHORT).show();
+                    case R.id.anhadirArticuloMenu:
+                        try {
+                            utilidades.esconderTeclado(getActivity(), getContext());
+                            if (comprobarArticuloCorrecto()) {
+                                obtenerDatosGuardar();
+                                guardarArticulo();
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                 }
                 return true;
             }
         });
 
-        toolbarAticulo.setNavigationOnClickListener(new View.OnClickListener(){
+        toolbarAticulo.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getFragmentManager().beginTransaction().replace(R.id.contenedorFragments, new ListaArticulos()).commit();
@@ -304,6 +305,11 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
             }
             return true;
         }
+    }
+
+    public void articuloLista(Articulo articulo){
+        articuloLista = articulo;
+        Toast.makeText(getContext(), "Articulo obtenido del listado", Toast.LENGTH_SHORT).show();
     }
 
     @Override

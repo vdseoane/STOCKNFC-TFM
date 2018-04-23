@@ -54,6 +54,7 @@ public class ListaArticulos extends android.support.v4.app.Fragment {
         super.onViewCreated(view, savedInstanceState);
 context = getContext();
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.listaArticulos);
         bd = new StockNFCDataBase(context);
         recycler= (RecyclerView) getView().findViewById(R.id.recycler);
         recycler.setLayoutManager(new LinearLayoutManager(getView().getContext(), LinearLayoutManager.VERTICAL, false));
@@ -65,13 +66,8 @@ botonAnadir.setOnClickListener(new View.OnClickListener() {
         manager.beginTransaction().replace(R.id.contenedorFragments, new Fragmento_Articulo()).commit();
     }
 });
-
-
         listaArticulo = obtenerArticulos();
-
         for(int i=0; i<300; i++){
-            //listaArticulo.add(new Articulo("Hola" + i));
-
             AdaptadorDatos adapter = new AdaptadorDatos(getActivity(), listaArticulo);
             recycler.setAdapter(adapter);
         }
