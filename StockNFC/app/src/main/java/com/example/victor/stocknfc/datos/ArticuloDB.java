@@ -40,6 +40,14 @@ public class ArticuloDB extends StockNFCDataBase{
         return cant;
     }
 
+    public int eliminarArticulo(SQLiteDatabase db, int id){
+        String condicion = ConstantesArticulo.ID_ARTICULO + "= '" + id+ "'";
+
+        int cant = db.delete(ConstantesArticulo.ARTICULO_TABLE_NAME, condicion, null);
+
+        return cant;
+    }
+
     public int getStock(SQLiteDatabase db, String nombre){
         /*db  = getReadableDatabase();
         String condicion = ConstantesArticulo.NOMBRE_ARTICULO + "= '" + nombre + "'";
@@ -98,6 +106,36 @@ public class ArticuloDB extends StockNFCDataBase{
         return articulo;
     }
 
+    public Articulo obtenerArticulo(SQLiteDatabase db, int idArticulo) {
+        db  = getReadableDatabase();
+        String condicion = ConstantesArticulo.ID_ARTICULO + "= '" + idArticulo+ "'";
+        Articulo articulo = new Articulo();
+        Cursor c = db.query(ConstantesArticulo.ARTICULO_TABLE_NAME,
+                null, condicion, null, null, null, null);
+        if (c.moveToFirst()){
+            int nombreIndex = c.getColumnIndex(ConstantesArticulo.NOMBRE_ARTICULO);
+            int stockIndex = c.getColumnIndex(ConstantesArticulo.STOCK_ARTICULO);
+            int idIndex = c.getColumnIndex(ConstantesArticulo.ID_ARTICULO);
+            int aletaStockIndex = c.getColumnIndex(ConstantesArticulo.ALERTA_STOCK);
+            int fechaCreacionIndex = c.getColumnIndex(ConstantesArticulo.FECHA_CREACION);
+            int precioIndex = c.getColumnIndex(ConstantesArticulo.PRECIO_ARTICULO);
+            int imagenIndex = c.getColumnIndex(ConstantesArticulo.IMAGEN_ARTICULO);
+            int proveedorIndex = c.getColumnIndex(ConstantesArticulo.PROVEEDOR_ARTICULO);
+            do {
+                String nombreArticulo = c.getString(nombreIndex);
+                int stockArticulo= c.getInt(stockIndex);
+                int id = c.getInt(idIndex);
+                int alertaStock = c.getInt(aletaStockIndex);
+                String fechaCreacion = c.getString(idIndex);
+                float precioArticulo = c.getFloat(precioIndex);
+                byte[] imagenArticulo = c.getBlob(imagenIndex);
+                String proveedor = c.getString(proveedorIndex);
+                articulo = new Articulo(id, nombreArticulo, stockArticulo, alertaStock, fechaCreacion, precioArticulo, imagenArticulo, proveedor);
+            } while (c.moveToNext());
+        }
+        return articulo;
+    }
+
     public long insertarArticulo(SQLiteDatabase db, Articulo articulo) {
         ContentValues values = new ContentValues();
         values.put(ConstantesArticulo.NOMBRE_ARTICULO, articulo.getNombre());
@@ -105,7 +143,7 @@ public class ArticuloDB extends StockNFCDataBase{
         values.put(ConstantesArticulo.ALERTA_STOCK, articulo.getAlertaStock());
         values.put(ConstantesArticulo.FECHA_CREACION, articulo.getFechaCreacion());
         values.put(ConstantesArticulo.IMAGEN_ARTICULO, articulo.getImagenArticulo());
-        values.put(ConstantesArticulo.PROVEEDOR_ARTICULO, articulo.getStock());
+        values.put(ConstantesArticulo.PROVEEDOR_ARTICULO, articulo.getProveedor());
         values.put(ConstantesArticulo.PRECIO_ARTICULO, articulo.getPrecio());
         long toret = db.insert(ConstantesArticulo.ARTICULO_TABLE_NAME, null, values);
 

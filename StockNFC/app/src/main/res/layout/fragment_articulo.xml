@@ -15,23 +15,50 @@
         android:layout_height="wrap_content"
         android:hint="@string/nombreArticulo"
         android:inputType="text"/>
+    <TextView
+        android:id="@+id/stockText"
+        android:layout_below="@+id/nombreArticulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:text="@string/stockArticuloText"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"/>
     <EditText
         android:id="@+id/stockArticulo"
-        android:layout_below="@+id/nombreArticulo"
+        android:layout_below="@+id/stockText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/stockArticulo"
         android:inputType="number"/>
+    <TextView
+        android:id="@+id/alertaText"
+        android:layout_below="@+id/stockArticulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:text="@string/alertaText"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"/>
     <EditText
         android:id="@+id/alertaArticulo"
-        android:layout_below="@+id/stockArticulo"
+        android:layout_below="@+id/alertaText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/alertaStock"
         android:inputType="number"/>
+    <TextView
+        android:id="@+id/precioText"
+        android:layout_below="@+id/alertaArticulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:text="@string/precioArticuloText"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"/>
     <EditText
         android:id="@+id/precioArticulo"
-        android:layout_below="@+id/alertaArticulo"
+        android:layout_below="@+id/precioText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/precioArticulo"
@@ -42,10 +69,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/fechaArticulo"
-        android:enabled="false"/>
+        android:enabled="false"
+        android:visibility="invisible"/>
+    <TextView
+        android:id="@+id/proveedorText"
+        android:layout_below="@+id/precioArticulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:text="@string/proveedorArticuloText"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"/>
     <EditText
         android:id="@+id/proveedorArticulo"
-        android:layout_below="@+id/fechaArticulo"
+        android:layout_below="@+id/proveedorText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/proveedorArticulo"
@@ -56,8 +93,8 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_centerInParent="true"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/user"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/trolley"
         android:layout_gravity="center"/>
 
     <android.support.design.widget.FloatingActionButton

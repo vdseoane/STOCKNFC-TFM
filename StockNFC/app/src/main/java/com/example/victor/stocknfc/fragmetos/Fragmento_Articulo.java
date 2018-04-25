@@ -5,6 +5,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -74,6 +75,12 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
     //Menu lateral
     DrawerLayout drawer;
 
+    //Menu toolbar
+    Menu menuToolbar;
+    MenuItem btnAnhadir;
+    MenuItem btnEliminar;
+    MenuItem btnModificar;
+
     private StockNFCDataBase bd;
     ArticuloDB bdArticulo;
 
@@ -92,13 +99,14 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
 
     //Datos articulo
     Articulo articulo = new Articulo();
-    Articulo articuloLista;
+    Articulo articuloObtenido;
     String nombre;
     int stock;
     int alerta;
     String fecha;
     float precio;
     String proveedor;
+    int id;
     byte[] imageInByte;
 
     //Datos obtencion imagen
@@ -112,30 +120,91 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         setHasOptionsMenu(true);
-
-        String texto = getArguments().getString("articulo de la lista");
         return inflater.inflate(R.layout.fragment_articulo, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        //Base de datos
+        bd = new StockNFCDataBase(getContext());
+        bdArticulo = new ArticuloDB(getContext());
         //Toolbar
         toolbarAticulo = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbarArticulo);
         toolbarAticulo.setTitle("Articulo");
-        toolbarAticulo.inflateMenu(R.menu.menu_articulo_anhadir);
         Drawable drawable = getContext().getDrawable(R.drawable.left_arrow);
         toolbarAticulo.setNavigationIcon(drawable);
         //Quitamos el menu lateral
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
-        //Fecha del día de hoy para el artículo
-        String fechaArt = fechaFormat.format(fechaArticuloDate);
+        toolbarAticulo.inflateMenu(R.menu.menu_articulo_editar);
         //Obtenemos los textviews
         obtenerTextViews();
+        Bundle arguments = getArguments();
+        if(arguments != null) {
+            id = Integer.parseInt(arguments.getString("articulo de la lista"));
+            //Botones(eliminar/modificar) visibles
+            habilitarBotonesMenu(true);
+            //Ponemos los campos a readonly
+            habilitarCampos(false);
+            //Obtenemos el articulo de BD
+            articuloObtenido = bdArticulo.obtenerArticulo(bd.getReadableDatabase(), id);
+            //Rellenamos los campos
+            rellenarCampos(articuloObtenido);
+        }else{
+            //Insercion visible
+            habilitarBotonesMenu(false);
+            //Habilitamos los campos
+            habilitarCampos(true);
+            //Fecha del día de hoy para el artículo
+            String fechaArt = fechaFormat.format(fechaArticuloDate);
+            fechaArticulo.setText(fechaArt);
+        }
         //creamos los onClicks
         crearOnClicks();
+    }
 
-        fechaArticulo.setText(fechaArt);
+    private void habilitarBotonesMenu(boolean edicion) {
+        btnModificar.setVisible(edicion);
+        btnModificar.setEnabled(edicion);
+        btnEliminar.setVisible(edicion);
+        btnEliminar.setVisible(edicion);
+        btnAnhadir.setVisible(!edicion);
+        btnAnhadir.setVisible(!edicion);
+    }
+
+    private void rellenarCampos(Articulo articuloObtenido) {
+        nombreArticulo.setText(articuloObtenido.getNombre());
+        stockArticulo.setText(String.valueOf(articuloObtenido.getStock()));
+        alertaArticulo.setText(String.valueOf(articuloObtenido.getAlertaStock()));
+        precioArticulo.setText(String.valueOf(articuloObtenido.getPrecio()));
+        proveedorArticulo.setText(articuloObtenido.getProveedor());
+        imgArticulo.setBackground(null);
+        if (articuloObtenido.getImagenArticulo() != null) {
+            Bitmap imagenArtBitmap = BitmapFactory.decodeByteArray(articuloObtenido.getImagenArticulo(), 0, articuloObtenido.getImagenArticulo().length);
+            imgArticulo.setImageBitmap(imagenArtBitmap);
+        }else {
+            imgArticulo.setImageResource(R.drawable.trolley);
+        }
+        fechaArticulo.setText(articuloObtenido.getFechaCreacion());
+    }
+
+    private void habilitarCampos(boolean habilitar) {
+        if(habilitar == false) {
+            nombreArticulo.setFocusable(habilitar);
+            stockArticulo.setFocusable(habilitar);
+            alertaArticulo.setFocusable(habilitar);
+            precioArticulo.setFocusable(habilitar);
+            proveedorArticulo.setFocusable(habilitar);
+            imgArticulo.setFocusable(habilitar);
+        }
+        else{
+            nombreArticulo.setFocusableInTouchMode(habilitar);
+            stockArticulo.setFocusableInTouchMode(habilitar);
+            alertaArticulo.setFocusableInTouchMode(habilitar);
+            precioArticulo.setFocusableInTouchMode(habilitar);
+            proveedorArticulo.setFocusableInTouchMode(habilitar);
+            imgArticulo.setFocusableInTouchMode(habilitar);
+        }
     }
 
     private void obtenerTextViews() {
@@ -146,6 +215,12 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         proveedorArticulo = getView().findViewById(R.id.proveedorArticulo);
         imgArticulo = getView().findViewById(R.id.imgArticulo);
         fechaArticulo = getView().findViewById(R.id.fechaArticulo);
+
+        //Menu toolbar
+        menuToolbar = toolbarAticulo.getMenu();
+        btnAnhadir = menuToolbar.findItem(R.id.anhadirArticuloMenu);
+        btnEliminar = menuToolbar.findItem(R.id.borrarArticuloMenu);
+        btnModificar = menuToolbar.findItem(R.id.modificarArticuloMenu);
     }
 
     private void crearOnClicks() {
@@ -160,9 +235,18 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.borrarArticuloMenu:
-                        Toast.makeText(getContext(), "Boton borrar pulsado", Toast.LENGTH_SHORT).show();
+                        int cant = bdArticulo.eliminarArticulo(bd.getWritableDatabase(), articuloObtenido.getId());
+                        if(cant >0) {
+                            Toast.makeText(getContext(), "Articulo borrado", Toast.LENGTH_SHORT).show();
+                            getFragmentManager().beginTransaction().replace(R.id.contenedorFragments, new ListaArticulos()).commit();
+                        }else{
+                            Toast.makeText(getContext(), "Error al borrar el artículo", Toast.LENGTH_SHORT).show();
+                        }
+                        break;
                     case R.id.modificarArticuloMenu:
-                        Toast.makeText(getContext(), "Boton modificar pulsado", Toast.LENGTH_SHORT).show();
+                        habilitarBotonesMenu(false);
+                        habilitarCampos(true);
+                        break;
                     case R.id.anhadirArticuloMenu:
                         try {
                             utilidades.esconderTeclado(getActivity(), getContext());
@@ -173,6 +257,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
+                        break;
                 }
                 return true;
             }
@@ -257,7 +342,6 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         articulo.setStock(Integer.parseInt(stockArticulo.getText().toString()));
         articulo.setFechaCreacion(fechaArticulo.getText().toString());
         articulo.setProveedor(proveedorArticulo.getText().toString());
-
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -307,11 +391,6 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
             }
             return true;
         }
-    }
-
-    public void articuloLista(Articulo articulo){
-        articuloLista = articulo;
-        Toast.makeText(getContext(), "Articulo obtenido del listado", Toast.LENGTH_SHORT).show();
     }
 
     @Override

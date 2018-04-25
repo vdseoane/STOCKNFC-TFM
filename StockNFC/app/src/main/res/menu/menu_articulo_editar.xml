@@ -12,4 +12,10 @@
         android:icon="@drawable/ic_menu_modification"
         android:title="@string/modificar"
         app:showAsAction="always"></item>
+
+    <item
+        android:id="@+id/anhadirArticuloMenu"
+        android:icon="@drawable/check_black"
+        android:title="@string/guardar"
+        app:showAsAction="always"></item>
 </menu>

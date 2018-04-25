@@ -43,4 +43,9 @@
     <string name="modificar">Modificar</string>
     <string name="atras">Atras</string>
     <string name="listaArticulos">Listado de Productos</string>
+    <string name="alerta">Alerta</string>
+    <string name="stockArticuloText">Stock disponible (Uds)</string>
+    <string name="alertaText">Alerta stock bajo</string>
+    <string name="precioArticuloText">Precio por unidad</string>
+    <string name="proveedorArticuloText">Email del proveedor</string>
 </resources>
