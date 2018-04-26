@@ -252,7 +252,13 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
                             utilidades.esconderTeclado(getActivity(), getContext());
                             if (comprobarArticuloCorrecto()) {
                                 obtenerDatosGuardar();
-                                guardarArticulo();
+                                if(articuloObtenido != null){
+editarArticulo();
+                                }else{
+
+                                    guardarArticulo();
+                                }
+
                             }
                         } catch (ParseException e) {
                             e.printStackTrace();
@@ -324,8 +330,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
     }
 
     private void guardarArticulo() {
-        bdArticulo = new ArticuloDB(getContext());
-
+        //bdArticulo = new ArticuloDB(getContext());
         long inserccion = bdArticulo.insertarArticulo(bdArticulo.getWritableDatabase(), articulo);
 
         if (inserccion != -1) {
@@ -333,6 +338,18 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
             getFragmentManager().beginTransaction().replace(R.id.contenedorFragments, new ListaArticulos()).commit();
         } else {
             Dialogo dialogo = new Dialogo(getContext(), "Ha habido un error al insertar el artículo");
+            dialogo.getDialogo().show();
+        }
+    }
+
+    private void editarArticulo() {
+        long edicion = bdArticulo.editarArticulo(bd.getWritableDatabase(), articuloObtenido.getId(), articulo);
+
+        if (edicion != -1) {
+            Toast.makeText(getContext(), "Articulo editado correctamente", Toast.LENGTH_LONG).show();
+            getFragmentManager().beginTransaction().replace(R.id.contenedorFragments, new ListaArticulos()).commit();
+        } else {
+            Dialogo dialogo = new Dialogo(getContext(), "Ha habido un error al editar el artículo");
             dialogo.getDialogo().show();
         }
     }
