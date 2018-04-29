@@ -16,7 +16,7 @@ public class Dialogo {
     public Dialogo(Context context, String mensaje) {
         builder = new AlertDialog.Builder(context);
         builder.setMessage(mensaje);
-        builder.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(com.example.victor.stocknfc.R.string.aceptar, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.cancel();

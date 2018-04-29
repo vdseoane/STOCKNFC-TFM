@@ -119,6 +119,8 @@ public class ArticuloDB extends StockNFCDataBase{
 
     public long insertarArticulo(SQLiteDatabase db, Articulo articulo) {
         ContentValues values = new ContentValues();
+        if(articulo.getId() >0)
+            values.put(ConstantesArticulo.ID_ARTICULO, articulo.getId());
         values.put(ConstantesArticulo.NOMBRE_ARTICULO, articulo.getNombre());
         values.put(ConstantesArticulo.STOCK_ARTICULO, articulo.getStock());
         values.put(ConstantesArticulo.ALERTA_STOCK, articulo.getAlertaStock());
@@ -160,5 +162,16 @@ public class ArticuloDB extends StockNFCDataBase{
             } while (c.moveToNext());
         }
         return listaArticulos;
+    }
+
+    public int obtenerSiguienteId(SQLiteDatabase db) {
+        int toret = 0;
+        db  = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT max(" +ConstantesArticulo.ID_ARTICULO + ") FROM " + ConstantesArticulo.ARTICULO_TABLE_NAME, null);
+        if (c.moveToFirst()){
+            toret = c.getInt(0);
+        }
+
+        return toret + 1;
     }
 }

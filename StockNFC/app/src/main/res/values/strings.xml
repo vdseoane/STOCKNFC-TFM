@@ -48,4 +48,12 @@
     <string name="alertaText">Alerta stock bajo</string>
     <string name="precioArticuloText">Precio por unidad</string>
     <string name="proveedorArticuloText">Email del proveedor</string>
+    <string name="nfc_operativo">NFC operativo</string>
+    <string name="nfcNoOperativo">NFC inhabilitado o inexistente</string>
+    <string name="NFCDetectado">Pegatina NFC detectada</string>
+    <string name="errorEscritura">Error al escribir en la pegatina</string>
+    <string name="noHayPegatina">No se detecta pegatina NFC</string>
+    <string name="escrituraCorrecta">Escritura correcta</string>
+    <string name="errorArticulo">No se puede guardar el artículo</string>
+    <string name="title_activity_escritura_nfc">EscrituraNFCActivity</string>
 </resources>

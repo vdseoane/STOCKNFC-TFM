@@ -42,6 +42,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -49,6 +50,7 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.example.victor.stocknfc.Dialogo;
+import com.example.victor.stocknfc.EscrituraActivity;
 import com.example.victor.stocknfc.R;
 import com.example.victor.stocknfc.Utilidades;
 import com.example.victor.stocknfc.VOs.Articulo;
@@ -78,7 +80,8 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
 
     //Toolbar
     android.support.v7.widget.Toolbar toolbarAticulo;
-
+    //Boton guardar NFC
+    FloatingActionButton botonGuardarNFC;
     //Menu lateral
     DrawerLayout drawer;
 
@@ -100,7 +103,6 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
     ImageView imgArticulo;
     Uri imgUri;
     String path;
-    FloatingActionButton btnGuardarArticulo;
     SimpleDateFormat fechaFormat = new SimpleDateFormat("dd-MM-yyyy");
     Date fechaArticuloDate = new Date();
 
@@ -117,8 +119,11 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
     int id;
     byte[] imageInByte;
 
+    PackageManager pm;
+
     //Datos obtencion imagen
-    private static final int ACTIVITY_SELECT_IMAGE = 1020, ACTIVITY_SELECT_FROM_CAMERA = 1040, USAR_CAMARA = 1050, LEER_MEMORIA_EXTERNA = 1060, ESCRIBIR_MEMORIA_EXTERNA = 1070;
+    private static final int ACTIVITY_SELECT_IMAGE = 1020, ACTIVITY_SELECT_FROM_CAMERA = 1040, USAR_CAMARA = 1050, LEER_MEMORIA_EXTERNA = 1060, ESCRIBIR_MEMORIA_EXTERNA = 1070, USAR_NFC = 1000, ARTICULO_ANHADIDO = 2000;
+    private static final String ARTICULO_INSERTAR = "Insertar articulo";
 
     public Fragmento_Articulo() {
     }
@@ -134,6 +139,8 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        //Package manager
+        pm = getActivity().getPackageManager();
         //Base de datos
         bd = new StockNFCDataBase(getContext());
         bdArticulo = new ArticuloDB(getContext());
@@ -154,6 +161,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
             id = Integer.parseInt(arguments.getString("articulo de la lista"));
             //Botones(eliminar/modificar) visibles
             habilitarBotonesMenu(true);
+            habilitarBotonNFC(false);
             //Ponemos los campos a readonly
             habilitarCampos(false);
             //Obtenemos el articulo de BD
@@ -163,12 +171,26 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         } else {
             //Insercion visible
             habilitarBotonesMenu(false);
+            deshabilitarInsercion();
+            habilitarBotonNFC(true);
             //Habilitamos los campos
             habilitarCampos(true);
             //Fecha del día de hoy para el artículo
             String fechaArt = fechaFormat.format(fechaArticuloDate);
             fechaArticulo.setText(fechaArt);
         }
+    }
+
+    private void habilitarBotonNFC(Boolean insercion) {
+        if(!insercion)
+        botonGuardarNFC.setVisibility(View.INVISIBLE);
+        else
+            botonGuardarNFC.setVisibility(View.VISIBLE);
+    }
+
+    private void deshabilitarInsercion() {
+        btnAnhadir.setVisible(false);
+        btnAnhadir.setVisible(false);
     }
 
     private void habilitarBotonesMenu(boolean edicion) {
@@ -224,12 +246,13 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         proveedorArticulo = getView().findViewById(R.id.proveedorArticulo);
         imgArticulo = getView().findViewById(R.id.imgArticulo);
         fechaArticulo = getView().findViewById(R.id.fechaArticulo);
-
         //Menu toolbar
         menuToolbar = toolbarAticulo.getMenu();
         btnAnhadir = menuToolbar.findItem(R.id.anhadirArticuloMenu);
         btnEliminar = menuToolbar.findItem(R.id.borrarArticuloMenu);
         btnModificar = menuToolbar.findItem(R.id.modificarArticuloMenu);
+        //Boton guardar NFC
+        botonGuardarNFC = (FloatingActionButton)getView().findViewById(R.id.btnGuardarArticuloNFC);
     }
 
     private void crearOnClicks() {
@@ -279,6 +302,48 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
                 getFragmentManager().beginTransaction().replace(R.id.contenedorFragments, new ListaArticulos()).commit();
             }
         });
+
+        botonGuardarNFC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Comprobar permiso NFC
+                int tienePermisoEscribirNFC = pm.checkPermission(Manifest.permission.NFC, getActivity().getPackageName());
+                if (tienePermisoEscribirNFC == PackageManager.PERMISSION_GRANTED) {
+                    //Comprobar articulo correcto
+                    try {
+                        utilidades.esconderTeclado(getActivity(), getContext());
+                        if (comprobarArticuloCorrecto()) {
+                            obtenerDatosGuardar();
+                            Intent intent = new Intent(getContext(), EscrituraActivity.class);
+                            intent = meterDatosIntent(intent, articulo);
+                            startActivityForResult(intent, ARTICULO_ANHADIDO);
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }else{
+                if (getContext().checkSelfPermission(
+                        Manifest.permission.NFC)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{Manifest.permission.NFC},
+                            USAR_NFC);
+                }
+            }
+            }
+        });
+    }
+
+    private Intent meterDatosIntent(Intent intent, Articulo articulo) {
+        intent.putExtra("ID", articulo.getId());
+        intent.putExtra("NOMBRE", articulo.getNombre());
+        intent.putExtra("STOCK", articulo.getStock());
+        intent.putExtra("ALERTA", articulo.getAlertaStock());
+        intent.putExtra("FECHA", articulo.getFechaCreacion());
+        intent.putExtra("PRECIO", articulo.getPrecio());
+        intent.putExtra("PROVEEDOR", articulo.getProveedor());
+        intent.putExtra("IMAGEN", articulo.getImagenArticulo());
+
+        return intent;
     }
 
     private void crearOnClickImagen() {
@@ -291,7 +356,6 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
 
     private void seleccionarImagenDialogo() {
         try {
-            PackageManager pm = getActivity().getPackageManager();
             int tienePermisoCamara = pm.checkPermission(Manifest.permission.CAMERA, getActivity().getPackageName());
             int tienePermisoLeerDatos = pm.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, getActivity().getPackageName());
             int tienePermisoEscribirDatos = pm.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, getActivity().getPackageName());
@@ -348,15 +412,16 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         File folder = Environment.getExternalStoragePublicDirectory("/From_camera/imagens");// the file path
 
         //if it doesn't exist the folder will be created
-        if(!folder.exists())
-        {folder.mkdir();}
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_"+ timeStamp + "_";
+        String imageFileName = "JPEG_" + timeStamp + "_";
         File image_file = null;
 
         try {
-            image_file = File.createTempFile(imageFileName,".jpg",folder);
+            image_file = File.createTempFile(imageFileName, ".jpg", folder);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -387,6 +452,13 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
                 seleccionarImagenDialogo();
             } else {
                 Toast.makeText(getContext(), "No se ha permitido el guardado de imágenes", Toast.LENGTH_LONG).show();
+            }
+        }
+        if (requestCode == USAR_NFC) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                botonGuardarNFC.callOnClick();
+            } else {
+                Toast.makeText(getContext(), "No se ha permitido usar el NFC", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -431,13 +503,18 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         } else if (requestCode == ACTIVITY_SELECT_FROM_CAMERA
                 && resultCode == getActivity().RESULT_OK) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
-           // Bitmap photo2 = rotarImagen(photo);
+            // Bitmap photo2 = rotarImagen(photo);
             imgArticulo.setBackground(null);
             imgArticulo.setImageBitmap(photo);
         }
+        else if (requestCode == ARTICULO_ANHADIDO
+                && resultCode == getActivity().RESULT_OK) {
+            Toast.makeText(getContext(), "Articulo añadido correctamente", Toast.LENGTH_LONG).show();
+            getFragmentManager().beginTransaction().replace(R.id.contenedorFragments, new ListaArticulos()).commit();
+        }
     }
 
-    private Bitmap rotarImagen(Bitmap bitmap){
+    private Bitmap rotarImagen(Bitmap bitmap) {
         ExifInterface exifInterface = null;
         try {
             exifInterface = new ExifInterface(String.valueOf(imgUri));
@@ -446,7 +523,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         }
         int orientacion = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
         Matrix matrix = new Matrix();
-        switch (orientacion){
+        switch (orientacion) {
             case ExifInterface.ORIENTATION_ROTATE_90:
                 matrix.setRotate(90);
                 break;
@@ -456,9 +533,9 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
             case ExifInterface.ORIENTATION_ROTATE_270:
                 matrix.setRotate(270);
                 break;
-                default:
+            default:
         }
-        Bitmap rotadoBitMap = Bitmap.createBitmap(bitmap, 0 ,0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        Bitmap rotadoBitMap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
         return rotadoBitMap;
     }
 

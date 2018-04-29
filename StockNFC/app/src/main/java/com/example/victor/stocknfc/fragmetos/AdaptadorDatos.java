@@ -78,13 +78,10 @@ public class AdaptadorDatos extends RecyclerView.Adapter<AdaptadorDatos.ViewHold
             cv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(context, "Elemento clickado: "+ getAdapterPosition(), Toast.LENGTH_SHORT).show();
                     Articulo articuloObtenido = listaArticulos.get(getAdapterPosition());
-                    Toast.makeText(context, "Id elemento clickado: "+ articuloObtenido.getId(), Toast.LENGTH_SHORT).show();
                     Bundle bundle = new Bundle();
                     bundle.putString("articulo de la lista", String.valueOf(articuloObtenido.getId()));
                     fragmento_articulo.setArguments(bundle);
-
                     FragmentManager manager = ((AppCompatActivity)context).getSupportFragmentManager();
                     manager.beginTransaction().replace(R.id.contenedorFragments, fragmento_articulo).commit();
                 }

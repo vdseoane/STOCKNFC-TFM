@@ -44,7 +44,8 @@
         android:layout_height="wrap_content"
         android:text="@string/entrar"
         android:layout_gravity="center"
-        android:onClick="onClick"/>
+        android:onClick="onClick"
+        android:layout_marginTop="25dp"/>
     <TextView
         android:id="@+id/textoRegistrar"
         android:layout_width="wrap_content"
