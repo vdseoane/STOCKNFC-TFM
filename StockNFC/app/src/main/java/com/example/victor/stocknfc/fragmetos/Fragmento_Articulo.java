@@ -10,19 +10,25 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.ExifInterface;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -53,6 +59,7 @@ import com.example.victor.stocknfc.datos.StockNFCDataBase;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -92,6 +99,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
     EditText proveedorArticulo;
     ImageView imgArticulo;
     Uri imgUri;
+    String path;
     FloatingActionButton btnGuardarArticulo;
     SimpleDateFormat fechaFormat = new SimpleDateFormat("dd-MM-yyyy");
     Date fechaArticuloDate = new Date();
@@ -110,7 +118,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
     byte[] imageInByte;
 
     //Datos obtencion imagen
-    private static final int ACTIVITY_SELECT_IMAGE = 1020, ACTIVITY_SELECT_FROM_CAMERA = 1040, MY_CAMERA_PERMISSION_CODE = 1050;
+    private static final int ACTIVITY_SELECT_IMAGE = 1020, ACTIVITY_SELECT_FROM_CAMERA = 1040, USAR_CAMARA = 1050, LEER_MEMORIA_EXTERNA = 1060, ESCRIBIR_MEMORIA_EXTERNA = 1070;
 
     public Fragmento_Articulo() {
     }
@@ -139,8 +147,10 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         toolbarAticulo.inflateMenu(R.menu.menu_articulo_editar);
         //Obtenemos los textviews
         obtenerTextViews();
+        //creamos los onClicks
+        crearOnClicks();
         Bundle arguments = getArguments();
-        if(arguments != null) {
+        if (arguments != null) {
             id = Integer.parseInt(arguments.getString("articulo de la lista"));
             //Botones(eliminar/modificar) visibles
             habilitarBotonesMenu(true);
@@ -150,7 +160,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
             articuloObtenido = bdArticulo.obtenerArticulo(bd.getReadableDatabase(), id);
             //Rellenamos los campos
             rellenarCampos(articuloObtenido);
-        }else{
+        } else {
             //Insercion visible
             habilitarBotonesMenu(false);
             //Habilitamos los campos
@@ -159,8 +169,6 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
             String fechaArt = fechaFormat.format(fechaArticuloDate);
             fechaArticulo.setText(fechaArt);
         }
-        //creamos los onClicks
-        crearOnClicks();
     }
 
     private void habilitarBotonesMenu(boolean edicion) {
@@ -182,28 +190,29 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         if (articuloObtenido.getImagenArticulo() != null) {
             Bitmap imagenArtBitmap = BitmapFactory.decodeByteArray(articuloObtenido.getImagenArticulo(), 0, articuloObtenido.getImagenArticulo().length);
             imgArticulo.setImageBitmap(imagenArtBitmap);
-        }else {
+        } else {
             imgArticulo.setImageResource(R.drawable.trolley);
         }
         fechaArticulo.setText(articuloObtenido.getFechaCreacion());
     }
 
     private void habilitarCampos(boolean habilitar) {
-        if(habilitar == false) {
+        if (habilitar == false) {
             nombreArticulo.setFocusable(habilitar);
             stockArticulo.setFocusable(habilitar);
             alertaArticulo.setFocusable(habilitar);
             precioArticulo.setFocusable(habilitar);
             proveedorArticulo.setFocusable(habilitar);
             imgArticulo.setFocusable(habilitar);
-        }
-        else{
+            imgArticulo.setOnClickListener(null);
+        } else {
             nombreArticulo.setFocusableInTouchMode(habilitar);
             stockArticulo.setFocusableInTouchMode(habilitar);
             alertaArticulo.setFocusableInTouchMode(habilitar);
             precioArticulo.setFocusableInTouchMode(habilitar);
             proveedorArticulo.setFocusableInTouchMode(habilitar);
             imgArticulo.setFocusableInTouchMode(habilitar);
+            crearOnClickImagen();
         }
     }
 
@@ -224,11 +233,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
     }
 
     private void crearOnClicks() {
-        imgArticulo.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                seleccionarImagenDialogo();
-            }
-        });
+        crearOnClickImagen();
 
         toolbarAticulo.setOnMenuItemClickListener(new android.support.v7.widget.Toolbar.OnMenuItemClickListener() {
             @Override
@@ -236,10 +241,10 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
                 switch (item.getItemId()) {
                     case R.id.borrarArticuloMenu:
                         int cant = bdArticulo.eliminarArticulo(bd.getWritableDatabase(), articuloObtenido.getId());
-                        if(cant >0) {
+                        if (cant > 0) {
                             Toast.makeText(getContext(), "Articulo borrado", Toast.LENGTH_SHORT).show();
                             getFragmentManager().beginTransaction().replace(R.id.contenedorFragments, new ListaArticulos()).commit();
-                        }else{
+                        } else {
                             Toast.makeText(getContext(), "Error al borrar el artículo", Toast.LENGTH_SHORT).show();
                         }
                         break;
@@ -252,10 +257,9 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
                             utilidades.esconderTeclado(getActivity(), getContext());
                             if (comprobarArticuloCorrecto()) {
                                 obtenerDatosGuardar();
-                                if(articuloObtenido != null){
-editarArticulo();
-                                }else{
-
+                                if (articuloObtenido != null) {
+                                    editarArticulo();
+                                } else {
                                     guardarArticulo();
                                 }
 
@@ -277,11 +281,21 @@ editarArticulo();
         });
     }
 
+    private void crearOnClickImagen() {
+        imgArticulo.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                seleccionarImagenDialogo();
+            }
+        });
+    }
+
     private void seleccionarImagenDialogo() {
         try {
             PackageManager pm = getActivity().getPackageManager();
-            int hasPerm = pm.checkPermission(Manifest.permission.CAMERA, getActivity().getPackageName());
-            if (hasPerm == PackageManager.PERMISSION_GRANTED) {
+            int tienePermisoCamara = pm.checkPermission(Manifest.permission.CAMERA, getActivity().getPackageName());
+            int tienePermisoLeerDatos = pm.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, getActivity().getPackageName());
+            int tienePermisoEscribirDatos = pm.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, getActivity().getPackageName());
+            if (tienePermisoCamara == PackageManager.PERMISSION_GRANTED && PackageManager.PERMISSION_GRANTED == tienePermisoLeerDatos && PackageManager.PERMISSION_GRANTED == tienePermisoEscribirDatos) {
                 final CharSequence[] options = {"Take Photo", "Choose From Gallery", "Cancel"};
                 android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
                 builder.setTitle("Select Option");
@@ -291,6 +305,8 @@ editarArticulo();
                         if (options[item].equals("Take Photo")) {
                             dialog.dismiss();
                             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            //imgUri = Uri.fromFile(getFile());
+                            //intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, imgUri);
                             startActivityForResult(intent, ACTIVITY_SELECT_FROM_CAMERA);
                         } else if (options[item].equals("Choose From Gallery")) {
                             dialog.dismiss();
@@ -306,9 +322,20 @@ editarArticulo();
                 if (getContext().checkSelfPermission(
                         Manifest.permission.CAMERA)
                         != PackageManager.PERMISSION_GRANTED) {
-
-                    getActivity().requestPermissions(new String[]{Manifest.permission.CAMERA},
-                            MY_CAMERA_PERMISSION_CODE);
+                    requestPermissions(new String[]{Manifest.permission.CAMERA},
+                            USAR_CAMARA);
+                }
+                if (getContext().checkSelfPermission(
+                        Manifest.permission.READ_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                            LEER_MEMORIA_EXTERNA);
+                }
+                if (getContext().checkSelfPermission(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            ESCRIBIR_MEMORIA_EXTERNA);
                 }
             }
         } catch (Exception e) {
@@ -317,14 +344,49 @@ editarArticulo();
         }
     }
 
+    private File getFile() {
+        File folder = Environment.getExternalStoragePublicDirectory("/From_camera/imagens");// the file path
+
+        //if it doesn't exist the folder will be created
+        if(!folder.exists())
+        {folder.mkdir();}
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_"+ timeStamp + "_";
+        File image_file = null;
+
+        try {
+            image_file = File.createTempFile(imageFileName,".jpg",folder);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        path = image_file.getAbsolutePath();
+        return image_file;
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_CAMERA_PERMISSION_CODE) {
+        if (requestCode == USAR_CAMARA) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(pickPhoto, ACTIVITY_SELECT_IMAGE);
+                seleccionarImagenDialogo();
             } else {
-                Toast.makeText(getContext(), "camera permission denied", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "No se ha permitido el uso de la cámara", Toast.LENGTH_LONG).show();
+            }
+        }
+        if (requestCode == LEER_MEMORIA_EXTERNA) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                seleccionarImagenDialogo();
+            } else {
+                Toast.makeText(getContext(), "No se ha permitido el acceso a imágenes", Toast.LENGTH_LONG).show();
+            }
+        }
+        if (requestCode == ESCRIBIR_MEMORIA_EXTERNA) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                seleccionarImagenDialogo();
+            } else {
+                Toast.makeText(getContext(), "No se ha permitido el guardado de imágenes", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -369,9 +431,35 @@ editarArticulo();
         } else if (requestCode == ACTIVITY_SELECT_FROM_CAMERA
                 && resultCode == getActivity().RESULT_OK) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
+           // Bitmap photo2 = rotarImagen(photo);
             imgArticulo.setBackground(null);
             imgArticulo.setImageBitmap(photo);
         }
+    }
+
+    private Bitmap rotarImagen(Bitmap bitmap){
+        ExifInterface exifInterface = null;
+        try {
+            exifInterface = new ExifInterface(String.valueOf(imgUri));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int orientacion = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
+        Matrix matrix = new Matrix();
+        switch (orientacion){
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                matrix.setRotate(90);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                matrix.setRotate(180);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                matrix.setRotate(270);
+                break;
+                default:
+        }
+        Bitmap rotadoBitMap = Bitmap.createBitmap(bitmap, 0 ,0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        return rotadoBitMap;
     }
 
     private boolean comprobarArticuloCorrecto() throws ParseException {
@@ -399,15 +487,40 @@ editarArticulo();
 
             //Imagen
             //Obtenemos la imagen
-            BitmapDrawable bitmapDrawable = ((BitmapDrawable) imgArticulo.getDrawable());
-            if (!validaciones.esNulo(bitmapDrawable)) {
-                Bitmap bitmap = bitmapDrawable.getBitmap();
+            //BitmapDrawable bitmapDrawable = ((BitmapDrawable) imgArticulo.getDrawable());
+            Drawable drawable = getResources().getDrawable(R.drawable.trolley, null);
+            Drawable drawable2 = imgArticulo.getDrawable();
+            //if(bitmapDrawable == drawable && bitmapDrawable != drawable)
+            if (!validaciones.esNulo(drawable2) && drawable2 != drawable) {
+                Bitmap bitmap = drawableToBitmap(drawable2);
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
                 articulo.setImagenArticulo(stream.toByteArray());
             }
             return true;
         }
+    }
+
+    public static Bitmap drawableToBitmap(Drawable drawable) {
+        Bitmap bitmap = null;
+
+        if (drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            if (bitmapDrawable.getBitmap() != null) {
+                return bitmapDrawable.getBitmap();
+            }
+        }
+
+        if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
+        } else {
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        }
+
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
     }
 
     @Override
