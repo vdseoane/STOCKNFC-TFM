@@ -1,6 +1,7 @@
 package com.example.victor.stocknfc;
 
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.nfc.FormatException;
@@ -50,6 +51,12 @@ public class EscrituraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.app_bar_main);
+
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setIcon(R.mipmap.ic_launcher);
+        progressDialog.setMessage("Escriniendo NFC...");
+        progressDialog.show();
+
         if (getIntent() != null) {
             articulo = new Articulo(getIntent().getIntExtra("ID", 0), getIntent().getStringExtra("NOMBRE"), getIntent().getIntExtra("STOCK", 0), getIntent().getIntExtra("ALERTA", -1), getIntent().getStringExtra("FECHA"), getIntent().getFloatExtra("PRECIO", 0), getIntent().getByteArrayExtra("IMAGEN"), getIntent().getStringExtra("PROVEEDOR"));
 
