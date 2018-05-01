@@ -158,7 +158,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         crearOnClicks();
         Bundle arguments = getArguments();
         if (arguments != null) {
-            id = Integer.parseInt(arguments.getString("articulo de la lista"));
+            id = Integer.parseInt(arguments.getString("articulo"));
             //Botones(eliminar/modificar) visibles
             habilitarBotonesMenu(true);
             habilitarBotonNFC(false);
@@ -511,6 +511,9 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
                 && resultCode == getActivity().RESULT_OK) {
             Toast.makeText(getContext(), "Articulo añadido correctamente", Toast.LENGTH_LONG).show();
             getFragmentManager().beginTransaction().replace(R.id.contenedorFragments, new ListaArticulos()).commit();
+        }else{
+            Dialogo dialogoNFC = new Dialogo(getContext(),"NFC no operativo, por favor, habilite el NFC y reintente la operación");
+            dialogoNFC.getBuilder().show();
         }
     }
 

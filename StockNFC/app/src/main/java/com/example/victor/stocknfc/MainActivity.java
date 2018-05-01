@@ -1,5 +1,6 @@
 package com.example.victor.stocknfc;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.example.victor.stocknfc.fragmetos.Fragmento_ControlStock;
 import com.example.victor.stocknfc.fragmetos.ListaArticulos;
 
 public class MainActivity extends AppCompatActivity
@@ -94,7 +96,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_camera) {
             cargarFragmento(new ListaArticulos());
         } else if (id == R.id.nav_gallery) {
-            //cargarFragmento(new Fragmento_1());
+            cargarFragmento(new Fragmento_ControlStock());
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {

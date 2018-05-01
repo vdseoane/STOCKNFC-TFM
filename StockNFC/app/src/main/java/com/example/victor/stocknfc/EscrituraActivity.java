@@ -54,7 +54,9 @@ public class EscrituraActivity extends AppCompatActivity {
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setIcon(R.mipmap.ic_launcher);
-        progressDialog.setMessage("Escriniendo NFC...");
+        progressDialog.setMessage("Escribiendo NFC...");
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
 
         if (getIntent() != null) {
@@ -64,19 +66,19 @@ public class EscrituraActivity extends AppCompatActivity {
             bd = new StockNFCDataBase(this);
             bdArticulo = new ArticuloDB(this);
             nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-            if (nfcAdapter != null && nfcAdapter.isEnabled()) {
-                //Toast.makeText(this, this.getString(R.string.nfc_operativo), Toast.LENGTH_SHORT).show();
+            if (nfcAdapter == null || !nfcAdapter.isEnabled()) {
+                Toast.makeText(this, this.getString(R.string.nfcNoOperativo), Toast.LENGTH_SHORT).show();
+                Intent returnIntent = new Intent();
+                setResult(this.RESULT_CANCELED, returnIntent);
+                finish();
             } else {
-                //Toast.makeText(this, this.getString(R.string.nfcNoOperativo), Toast.LENGTH_SHORT).show();
+                pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+                IntentFilter tagDetected = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
+                tagDetected.addCategory(Intent.CATEGORY_DEFAULT);
+                writeTagFilters = new IntentFilter[]{tagDetected};
+
+                Toast.makeText(this, "Escribiendo pegatina NFC...", Toast.LENGTH_SHORT).show();
             }
-
-            pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
-            IntentFilter tagDetected = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
-            tagDetected.addCategory(Intent.CATEGORY_DEFAULT);
-            writeTagFilters = new IntentFilter[]{tagDetected};
-
-            Toast.makeText(this, "Escribiendo pegatina NFC...", Toast.LENGTH_SHORT).show();
-
         } else {
             Toast.makeText(this, this.getString(R.string.errorArticulo), Toast.LENGTH_SHORT).show();
         }
@@ -96,10 +98,8 @@ public class EscrituraActivity extends AppCompatActivity {
                     //Llamamos al método write que definimos más adelante donde le pasamos por
                     //parámetro el tag que hemos detectado y el mensaje a escribir.
                     write(obtenerSiguienteId(), myTag);
-                    //Toast.makeText(this, this.getString(R.string.escrituraCorrecta), Toast.LENGTH_LONG).show();
                     long inserccion = bdArticulo.insertarArticulo(bd.getWritableDatabase(), articulo);
                     if (inserccion != -1) {
-                        //Toast.makeText(this, "Articulo añadido correctamente", Toast.LENGTH_LONG).show();
                         Intent returnIntent = new Intent();
                         setResult(this.RESULT_OK, returnIntent);
                         finish();
@@ -176,6 +176,4 @@ public class EscrituraActivity extends AppCompatActivity {
         writeMode = false;
         nfcAdapter.disableForegroundDispatch(this);
     }
-
-
 }

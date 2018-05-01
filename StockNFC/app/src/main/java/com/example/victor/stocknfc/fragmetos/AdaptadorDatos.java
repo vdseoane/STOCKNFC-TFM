@@ -80,7 +80,7 @@ public class AdaptadorDatos extends RecyclerView.Adapter<AdaptadorDatos.ViewHold
                 public void onClick(View view) {
                     Articulo articuloObtenido = listaArticulos.get(getAdapterPosition());
                     Bundle bundle = new Bundle();
-                    bundle.putString("articulo de la lista", String.valueOf(articuloObtenido.getId()));
+                    bundle.putString("articulo", String.valueOf(articuloObtenido.getId()));
                     fragmento_articulo.setArguments(bundle);
                     FragmentManager manager = ((AppCompatActivity)context).getSupportFragmentManager();
                     manager.beginTransaction().replace(R.id.contenedorFragments, fragmento_articulo).commit();

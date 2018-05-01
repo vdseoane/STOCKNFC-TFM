@@ -174,4 +174,13 @@ public class ArticuloDB extends StockNFCDataBase{
 
         return toret + 1;
     }
+
+    public int editarStockArticulo(SQLiteDatabase db , int stock, int id) {
+            ContentValues values = new ContentValues();
+            String condicion = ConstantesArticulo.ID_ARTICULO + "= '" + id+ "'";
+            values.put(ConstantesArticulo.STOCK_ARTICULO, stock);
+            int cant = db.update(ConstantesArticulo.ARTICULO_TABLE_NAME, values, condicion, null);
+
+            return cant;
+    }
 }
