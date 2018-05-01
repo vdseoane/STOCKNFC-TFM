@@ -50,7 +50,7 @@ public class EscrituraActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.app_bar_main);
+        setContentView(R.layout.activity_escritura);
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setIcon(R.mipmap.ic_launcher);
