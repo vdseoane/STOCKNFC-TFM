@@ -75,6 +75,7 @@ public class LogIn extends AppCompatActivity {
                intentPaginaPrincipal.putExtra("nombreUsuario", "prueba");
                 intentPaginaPrincipal.putExtra("emailUsuario", "email@prueba");
                 LogIn.this.startActivity(intentPaginaPrincipal);
+        finish();
     }
 
 }

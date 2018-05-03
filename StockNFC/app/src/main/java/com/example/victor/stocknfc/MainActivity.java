@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import com.example.victor.stocknfc.fragmetos.Fragmento_ControlStock;
 import com.example.victor.stocknfc.fragmetos.ListaArticulos;
+import com.example.victor.stocknfc.logIn.LogIn;
+import com.example.victor.stocknfc.logIn.Registro;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -93,16 +95,22 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.consultarProductoMenu) {
             cargarFragmento(new ListaArticulos());
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.administrarStock) {
             cargarFragmento(new Fragmento_ControlStock());
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.pedidoMenu) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.alertaStockMenu) {
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.anhadirUsuarioMenu) {
+            Intent intentRegistrar = new Intent(this, Registro.class);
+            startActivity(intentRegistrar);
+        } else if (id == R.id.cerrarSesion) {
 
+            Intent logInIntent = new Intent(this, LogIn.class);
+            startActivity(logInIntent);
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -110,14 +118,14 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void cargarFragmento(Fragment fragmento){
+    private void cargarFragmento(Fragment fragmento) {
         FragmentManager manager = getSupportFragmentManager();
 
         manager.beginTransaction().replace(R.id.contenedorFragments, fragmento).commit();
     }
 
 
-    public void recibirDatos(){
+    public void recibirDatos() {
         Bundle extras = getIntent().getExtras();
         nombreUsuario = extras.getString("nombreUsuario");
         emailUsuario = extras.getString("emailUsuario");
