@@ -17,32 +17,29 @@ public class UsuarioDB extends StockNFCDataBase {
         super(context);
     }
 
-    public void insertarUsuario(SQLiteDatabase db, String nombre, String email, String rol, String pass){
+    public void insertarUsuario(SQLiteDatabase db, String nombre, String rol, String pass){
         ContentValues values = new ContentValues();
         values.put(ConstantesUsuario.NOMBRE_USUARIO, nombre);
-        values.put(ConstantesUsuario.EMAIL_USUARIO, email);
         values.put(ConstantesUsuario.ROL_USUARIO, rol);
         values.put(ConstantesUsuario.PASS_USUARIO, pass);
         db.insert(ConstantesUsuario.USUARIO_TABLE_NAME, null, values);
     }
 
-    public Usuario obtenerUsuario(SQLiteDatabase db, String email, String pass){
+    public Usuario obtenerUsuario(SQLiteDatabase db, String nombre, String pass){
         db  = getReadableDatabase();
-        String condicion = ConstantesUsuario.EMAIL_USUARIO+ "= '" + email+ "'";
+        String condicion = ConstantesUsuario.NOMBRE_USUARIO+ "= '" + nombre+ "'";
         Usuario usuario = null;
         Cursor c = db.query(ConstantesUsuario.USUARIO_TABLE_NAME,
                 null, condicion, null, null, null, null);
         if (c.moveToFirst()){
             int nombreIndex = c.getColumnIndex(ConstantesUsuario.NOMBRE_USUARIO);
-            int emailIndex = c.getColumnIndex(ConstantesUsuario.EMAIL_USUARIO);
             int rolIndex = c.getColumnIndex(ConstantesUsuario.ROL_USUARIO);
             int passIndex = c.getColumnIndex(ConstantesUsuario.PASS_USUARIO);
             do {
                 String nombreUsuario = c.getString(nombreIndex);
-                String emailUsuario = c.getString(emailIndex);
                 String passUsuario = c.getString(passIndex);
                 String rolUsuario = c.getString(rolIndex);
-                usuario = new Usuario(nombreUsuario, passUsuario, emailUsuario, rolUsuario);
+                usuario = new Usuario(nombreUsuario, passUsuario, rolUsuario);
             } while (c.moveToNext());
         }
         return usuario;

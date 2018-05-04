@@ -22,11 +22,6 @@ public class ConstantesUsuario {
     public static final String NOMBRE_USUARIO = "nombre_usuario";
 
     /**
-     * Email del usuario
-     */
-    public static final String EMAIL_USUARIO = "email_usuario";
-
-    /**
      * Pass usuario
      */
     public static final String PASS_USUARIO = "pass_usuario";

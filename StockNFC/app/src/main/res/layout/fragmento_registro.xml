@@ -1,0 +1,70 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.victor.stocknfc.logIn.Fragmento_Registro"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/emailRegistroText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:text="@string/emailRegistroTxt"
+        android:layout_marginLeft="3dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="3dp"/>
+
+    <EditText
+        android:id="@+id/usuarioRegistrar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/usuarioTxt"
+        android:inputType="text"/>
+
+    <TextView
+        android:id="@+id/contrasenhaRegistroTxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:text="@string/contrasenhaRegistroTxt"
+        android:layout_marginLeft="3dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="3dp"/>
+
+    <EditText
+        android:id="@+id/passRegistrar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/passTxt"
+        android:inputType="textPassword"/>
+
+    <TextView
+        android:id="@+id/rolRegistroTxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:text="@string/rolRegistroTxt"
+        android:layout_marginLeft="3dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="3dp"/>
+    <Spinner
+        android:id="@+id/desplegableRol"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:paddingLeft="8dp"
+        android:popupBackground="@android:color/white"
+        android:scrollbars="none"
+        android:spinnerMode="dropdown"
+        android:prompt="@string/rolTxt"/>
+
+    <Button
+        android:id="@+id/botonRegistrar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/registrar"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"/>
+
+</LinearLayout>

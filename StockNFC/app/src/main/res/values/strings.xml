@@ -67,4 +67,14 @@
     <string name="anhadirUsuario">Añadir Usuario</string>
     <string name="alertasStock">Gestion de Alertas</string>
     <string name="cerrarSesion">Cerrar Sesión</string>
+    <string name="emailRegistroTxt">Email del usuario</string>
+    <string name="contrasenhaRegistroTxt">Contraseña</string>
+    <string name="rolRegistroTxt">Rol del usuario</string>
+    <string name="registroUsuario">Registro Usuario</string>
+    <string name="controlStock">Control de Stock</string>
+
+    <string-array name="array_roles">
+        <item>Administrador</item>
+        <item>Empleado</item>
+    </string-array>
 </resources>

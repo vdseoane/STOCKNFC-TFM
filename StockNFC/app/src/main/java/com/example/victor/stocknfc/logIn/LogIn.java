@@ -30,18 +30,6 @@ public class LogIn extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
         bd = new StockNFCDataBase(context);
-        //Crear el evento al pulsar sobre el texto registrar
-        textoRegistrar = findViewById(R.id.textoRegistrar);
-
-        textoRegistrar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Vamos a la pantalla de registro de usuario
-                Intent intentRegistrar = new Intent(LogIn.this, Registro.class);
-                LogIn.this.startActivity(intentRegistrar);
-            }
-        });
-
     }
 
     public void onClick(View v) {

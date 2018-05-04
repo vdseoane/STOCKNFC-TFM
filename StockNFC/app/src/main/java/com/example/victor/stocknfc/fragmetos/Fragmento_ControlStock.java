@@ -45,6 +45,9 @@ public class Fragmento_ControlStock extends android.support.v4.app.Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.controlStock);
 //Base de datos
         bd = new StockNFCDataBase(getContext());
         bdArticulo = new ArticuloDB(getContext());

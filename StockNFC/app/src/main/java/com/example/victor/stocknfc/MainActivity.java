@@ -17,8 +17,8 @@ import android.widget.TextView;
 
 import com.example.victor.stocknfc.fragmetos.Fragmento_ControlStock;
 import com.example.victor.stocknfc.fragmetos.ListaArticulos;
+import com.example.victor.stocknfc.logIn.Fragmento_Registro;
 import com.example.victor.stocknfc.logIn.LogIn;
-import com.example.victor.stocknfc.logIn.Registro;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -104,10 +104,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.alertaStockMenu) {
 
         } else if (id == R.id.anhadirUsuarioMenu) {
-            Intent intentRegistrar = new Intent(this, Registro.class);
-            startActivity(intentRegistrar);
+            cargarFragmento(new Fragmento_Registro());
         } else if (id == R.id.cerrarSesion) {
-
             Intent logInIntent = new Intent(this, LogIn.class);
             startActivity(logInIntent);
             finish();

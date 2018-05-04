@@ -10,17 +10,15 @@ public class Usuario {
 
     private String nombre;
     private String pass;
-    private String email;
     private String rol;
 
 
 
     public Usuario(){};
 
-    public Usuario(String nombre, String pass, String email, String rol) {
+    public Usuario(String nombre, String pass, String rol) {
         this.nombre = nombre;
         this.pass = pass;
-        this.email = email;
         this.rol = rol;
     }
 
@@ -38,14 +36,6 @@ public class Usuario {
 
     public void setPass(String pass) {
         this.pass = pass;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getRol() {

@@ -42,7 +42,6 @@ public class StockNFCDataBase extends SQLiteOpenHelper {
 
         //Usuario
         db.execSQL("CREATE TABLE IF NOT EXISTS " + ConstantesUsuario.USUARIO_TABLE_NAME + " (" +
-                ConstantesUsuario.EMAIL_USUARIO + " TEXT NOT NULL PRIMARY KEY," +
                 ConstantesUsuario.NOMBRE_USUARIO + " TEXT NOT NULL, " +
                 ConstantesUsuario.PASS_USUARIO + " TEXT NOT NULL, " +
                 ConstantesUsuario.ROL_USUARIO + " TEXT); ");
