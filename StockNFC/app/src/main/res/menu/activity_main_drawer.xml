@@ -20,7 +20,7 @@
             android:id="@+id/alertaStockMenu"
             android:icon="@drawable/alerta"
             android:title="@string/alertasStock" />
-    </group>
+
 
     <item android:title="@string/configuracion">
         <menu>
@@ -34,5 +34,6 @@
                 android:title="@string/cerrarSesion" />
         </menu>
     </item>
+    </group>
 
 </menu>

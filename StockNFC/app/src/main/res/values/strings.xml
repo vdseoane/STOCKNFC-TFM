@@ -72,6 +72,11 @@
     <string name="rolRegistroTxt">Rol del usuario</string>
     <string name="registroUsuario">Registro Usuario</string>
     <string name="controlStock">Control de Stock</string>
+    <string name="pedidos">Pedidos</string>
+    <string name="msnProveedorNulo">El email del proveedor no debe estar vacío</string>
+    <string name="nombreArticuloPedido">Nombre del Artículo</string>
+    <string name="stockPedidoText">Numero de uds a pedir</string>
+    <string name="stockPedido">Nº uds del pedido</string>
 
     <string-array name="array_roles">
         <item>Administrador</item>

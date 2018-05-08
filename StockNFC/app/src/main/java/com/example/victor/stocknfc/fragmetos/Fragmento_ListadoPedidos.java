@@ -1,36 +1,32 @@
 package com.example.victor.stocknfc.fragmetos;
 
 
-import android.app.FragmentTransaction;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
-import com.example.victor.stocknfc.MainActivity;
 import com.example.victor.stocknfc.R;
 import com.example.victor.stocknfc.VOs.Articulo;
 import com.example.victor.stocknfc.datos.ArticuloDB;
 import com.example.victor.stocknfc.datos.StockNFCDataBase;
-import com.example.victor.stocknfc.logIn.LogIn;
 
 import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ListaArticulos extends android.support.v4.app.Fragment {
+public class Fragmento_ListadoPedidos extends android.support.v4.app.Fragment {
     public StockNFCDataBase bd;
     ArticuloDB bdArticulo;
 
@@ -38,7 +34,7 @@ public class ListaArticulos extends android.support.v4.app.Fragment {
     RecyclerView recycler;
     Context context;
 
-    public ListaArticulos() {
+    public Fragmento_ListadoPedidos() {
         // Required empty public constructor
     }
 
@@ -46,8 +42,8 @@ public class ListaArticulos extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        return inflater.inflate(R.layout.fragment_lista_articulos, container, false);
+        setHasOptionsMenu(true);
+        return inflater.inflate(R.layout.fragmento_pedidos, container, false);
     }
 
     @Override
@@ -55,23 +51,16 @@ public class ListaArticulos extends android.support.v4.app.Fragment {
         super.onViewCreated(view, savedInstanceState);
 context = getContext();
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.listaArticulos);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.pedidos);
         NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
-        navigationView.setCheckedItem(R.id.consultarProductoMenu);
+        navigationView.setCheckedItem(R.id.pedidoMenu);
         bd = new StockNFCDataBase(context);
-        recycler= (RecyclerView) getView().findViewById(R.id.recycler);
+        recycler= (RecyclerView) getView().findViewById(R.id.recyclerPedidos);
         recycler.setLayoutManager(new LinearLayoutManager(getView().getContext(), LinearLayoutManager.VERTICAL, false));
-FloatingActionButton botonAnadir = getView().findViewById(R.id.btnAnhadirArticulo);
-botonAnadir.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View view) {
-        FragmentManager manager = getFragmentManager();
-        manager.beginTransaction().replace(R.id.contenedorFragments, new Fragmento_Articulo()).commit();
-    }
-});
+
         listaArticulo = obtenerArticulos();
         for(int i=0; i<300; i++){
-            AdaptadorDatos adapter = new AdaptadorDatos(getActivity(), listaArticulo);
+            AdaptadorDatosPedidos adapter = new AdaptadorDatosPedidos(getActivity(), listaArticulo);
             recycler.setAdapter(adapter);
         }
     }

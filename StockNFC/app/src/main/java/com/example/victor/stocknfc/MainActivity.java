@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.victor.stocknfc.fragmetos.Fragmento_ControlStock;
+import com.example.victor.stocknfc.fragmetos.Fragmento_ListadoPedidos;
 import com.example.victor.stocknfc.fragmetos.ListaArticulos;
 import com.example.victor.stocknfc.logIn.Fragmento_Registro;
 import com.example.victor.stocknfc.logIn.LogIn;
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.administrarStock) {
             cargarFragmento(new Fragmento_ControlStock());
         } else if (id == R.id.pedidoMenu) {
-
+            cargarFragmento(new Fragmento_ListadoPedidos());
         } else if (id == R.id.alertaStockMenu) {
 
         } else if (id == R.id.anhadirUsuarioMenu) {
