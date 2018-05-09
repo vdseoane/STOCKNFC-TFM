@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.view.SubMenu;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.victor.stocknfc.fragmetos.Fragmento_ControlStock;
+import com.example.victor.stocknfc.fragmetos.Fragmento_ListaAlertas;
 import com.example.victor.stocknfc.fragmetos.Fragmento_ListadoPedidos;
 import com.example.victor.stocknfc.fragmetos.ListaArticulos;
 import com.example.victor.stocknfc.logIn.Fragmento_Registro;
@@ -27,6 +29,7 @@ public class MainActivity extends AppCompatActivity
     //Datos del intent LogIn
     String nombreUsuario;
     String emailUsuario;
+    NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +44,7 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         //Modificamos los datos de la cabecera del menu lateral
@@ -95,7 +98,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
+        uncheckAllMenuItems(navigationView);
         if (id == R.id.consultarProductoMenu) {
             cargarFragmento(new ListaArticulos());
         } else if (id == R.id.administrarStock) {
@@ -103,14 +106,17 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.pedidoMenu) {
             cargarFragmento(new Fragmento_ListadoPedidos());
         } else if (id == R.id.alertaStockMenu) {
-
+            cargarFragmento(new Fragmento_ListaAlertas());
         } else if (id == R.id.anhadirUsuarioMenu) {
             cargarFragmento(new Fragmento_Registro());
         } else if (id == R.id.cerrarSesion) {
+
             Intent logInIntent = new Intent(this, LogIn.class);
             startActivity(logInIntent);
             finish();
         }
+
+        item.setChecked(true);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -128,5 +134,21 @@ public class MainActivity extends AppCompatActivity
         Bundle extras = getIntent().getExtras();
         nombreUsuario = extras.getString("nombreUsuario");
         emailUsuario = extras.getString("emailUsuario");
+    }
+
+    private void uncheckAllMenuItems(NavigationView navigationView) {
+        final Menu menu = navigationView.getMenu();
+        for (int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            if (item.hasSubMenu()) {
+                SubMenu subMenu = item.getSubMenu();
+                for (int j = 0; j < subMenu.size(); j++) {
+                    MenuItem subMenuItem = subMenu.getItem(j);
+                    subMenuItem.setChecked(false);
+                }
+            } else {
+                item.setChecked(false);
+            }
+        }
     }
 }

@@ -70,7 +70,7 @@ botonAnadir.setOnClickListener(new View.OnClickListener() {
     }
 });
         listaArticulo = obtenerArticulos();
-        for(int i=0; i<300; i++){
+        for(int i=0; i<listaArticulo.size(); i++){
             AdaptadorDatos adapter = new AdaptadorDatos(getActivity(), listaArticulo);
             recycler.setAdapter(adapter);
         }

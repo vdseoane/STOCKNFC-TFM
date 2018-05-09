@@ -183,4 +183,36 @@ public class ArticuloDB extends StockNFCDataBase{
 
             return cant;
     }
+
+    public ArrayList<Articulo> obtenerArticulosEnAlerta(SQLiteDatabase db) {
+        db  = getReadableDatabase();
+        ArrayList<Articulo> listaArticulos = new ArrayList<Articulo>();
+        String condicion = ConstantesArticulo.ALERTA_STOCK +" > -1 AND " +  ConstantesArticulo.ALERTA_STOCK +">="+ConstantesArticulo.STOCK_ARTICULO;
+        Articulo articulo = new Articulo();
+        Cursor c = db.query(ConstantesArticulo.ARTICULO_TABLE_NAME,
+                null, condicion, null, null, null, null);
+        if (c.moveToFirst()){
+            int nombreIndex = c.getColumnIndex(ConstantesArticulo.NOMBRE_ARTICULO);
+            int stockIndex = c.getColumnIndex(ConstantesArticulo.STOCK_ARTICULO);
+            int idIndex = c.getColumnIndex(ConstantesArticulo.ID_ARTICULO);
+            int aletaStockIndex = c.getColumnIndex(ConstantesArticulo.ALERTA_STOCK);
+            int fechaCreacionIndex = c.getColumnIndex(ConstantesArticulo.FECHA_CREACION);
+            int precioIndex = c.getColumnIndex(ConstantesArticulo.PRECIO_ARTICULO);
+            int imagenIndex = c.getColumnIndex(ConstantesArticulo.IMAGEN_ARTICULO);
+            int proveedorIndex = c.getColumnIndex(ConstantesArticulo.PROVEEDOR_ARTICULO);
+            do {
+                String nombreArticulo = c.getString(nombreIndex);
+                int stockArticulo= c.getInt(stockIndex);
+                int id = c.getInt(idIndex);
+                int alertaStock = c.getInt(aletaStockIndex);
+                String fechaCreacion = c.getString(idIndex);
+                float precioArticulo = c.getFloat(precioIndex);
+                String proveedorArticulo = c.getString(proveedorIndex);
+                byte[] imagenArticulo = c.getBlob(imagenIndex);
+                articulo = new Articulo(id, nombreArticulo, stockArticulo, alertaStock, fechaCreacion, precioArticulo, imagenArticulo, proveedorArticulo);
+                listaArticulos.add(articulo);
+            } while (c.moveToNext());
+        }
+        return listaArticulos;
+    }
 }

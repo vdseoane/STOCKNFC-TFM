@@ -77,6 +77,7 @@
     <string name="nombreArticuloPedido">Nombre del Artículo</string>
     <string name="stockPedidoText">Numero de uds a pedir</string>
     <string name="stockPedido">Nº uds del pedido</string>
+    <string name="gestionAlertas">Pedidos con alerta</string>
 
     <string-array name="array_roles">
         <item>Administrador</item>

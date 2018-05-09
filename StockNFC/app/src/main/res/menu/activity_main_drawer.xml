@@ -7,33 +7,35 @@
         <item
             android:id="@+id/consultarProductoMenu"
             android:icon="@drawable/trolley"
-            android:title="@string/consultarProductos" />
+            android:title="@string/consultarProductos"
+            android:color="@color/lightGrey" android:state_checked="true" />
         <item
             android:id="@+id/administrarStock"
             android:icon="@drawable/checked"
-            android:title="@string/stock" />
+            android:title="@string/stock"
+            android:color="@color/lightGrey" android:state_checked="true"/>
         <item
             android:id="@+id/pedidoMenu"
             android:icon="@drawable/dollar"
-            android:title="@string/realizarPedido" />
+            android:title="@string/realizarPedido"
+            android:color="@color/lightGrey" android:state_checked="true"/>
         <item
             android:id="@+id/alertaStockMenu"
             android:icon="@drawable/alerta"
-            android:title="@string/alertasStock" />
+            android:title="@string/alertasStock"
+            android:color="@color/lightGrey" android:state_checked="true"/>
+        <item
+            android:id="@+id/anhadirUsuarioMenu"
+            android:icon="@drawable/user"
+            android:title="@string/anhadirUsuario"
+            android:color="@color/lightGrey" android:state_checked="true"/>
 
-
-    <item android:title="@string/configuracion">
-        <menu>
-            <item
-                android:id="@+id/anhadirUsuarioMenu"
-                android:icon="@drawable/user"
-                android:title="@string/anhadirUsuario" />
             <item
                 android:id="@+id/cerrarSesion"
                 android:icon="@drawable/login"
-                android:title="@string/cerrarSesion" />
-        </menu>
-    </item>
+                android:title="@string/cerrarSesion"
+                android:color="@color/lightGrey" android:state_checked="true"/>
     </group>
+
 
 </menu>

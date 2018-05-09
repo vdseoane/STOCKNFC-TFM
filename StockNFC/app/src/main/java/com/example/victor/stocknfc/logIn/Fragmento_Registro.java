@@ -47,8 +47,6 @@ public class Fragmento_Registro extends android.support.v4.app.Fragment {
         super.onViewCreated(view, savedInstanceState);
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.registroUsuario);
-        NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
-        navigationView.setCheckedItem(R.id.anhadirUsuarioMenu);
         bd = new StockNFCDataBase(getContext());
 
 
