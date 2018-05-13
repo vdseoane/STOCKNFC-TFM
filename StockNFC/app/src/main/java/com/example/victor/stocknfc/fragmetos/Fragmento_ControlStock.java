@@ -109,7 +109,7 @@ numeroControl.setText(String.valueOf(barra.getProgress()));
             bundle.putString("articulo", String.valueOf(data.getIntExtra("ID", 0)));
             fragmento_articulo.setArguments(bundle);
             FragmentManager manager = ((AppCompatActivity)getContext()).getSupportFragmentManager();
-            manager.beginTransaction().replace(R.id.contenedorFragments, fragmento_articulo).commit();
+            manager.beginTransaction().replace(R.id.contenedorFragments, fragmento_articulo).addToBackStack(null).commit();
         }
     }
 }

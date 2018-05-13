@@ -78,6 +78,9 @@
     <string name="stockPedidoText">Numero de uds a pedir</string>
     <string name="stockPedido">Nº uds del pedido</string>
     <string name="gestionAlertas">Pedidos con alerta</string>
+    <string name="enviandoEmail">Enviando email a proveedor</string>
+    <string name="asuntoEmail">Realización de pedido</string>
+    <string name="emailEnviado">Email enviado</string>
 
     <string-array name="array_roles">
         <item>Administrador</item>

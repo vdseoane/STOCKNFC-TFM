@@ -78,7 +78,7 @@ public class AdaptadorDatosAlerta extends RecyclerView.Adapter<AdaptadorDatosAle
                     bundle.putString("articulo", String.valueOf(articuloObtenido.getId()));
                     fragmento_pedido.setArguments(bundle);
                     FragmentManager manager = ((AppCompatActivity)context).getSupportFragmentManager();
-                    manager.beginTransaction().replace(R.id.contenedorFragments, fragmento_pedido).commit();
+                    manager.beginTransaction().replace(R.id.contenedorFragments, fragmento_pedido).addToBackStack(null).commit();
                 }
             });
         }

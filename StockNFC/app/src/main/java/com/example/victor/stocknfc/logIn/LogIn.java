@@ -38,32 +38,32 @@ public class LogIn extends AppCompatActivity {
         Usuario usuarioObtenido = null;
         UsuarioDB dbUsuario = new UsuarioDB(context);
 
-//        usuarioObtenido = dbUsuario.obtenerUsuario(bd.getWritableDatabase(), txtUsuario.getText().toString(), txtPassUsuario.getText().toString());
-//        if (usuarioObtenido != null) {
-//            if (usuarioObtenido.getEmail().equals(txtUsuario.getText().toString()) && usuarioObtenido.getPass().equals(txtPassUsuario.getText().toString())) {
-//                //Usuario correcto, mostramos la pantalla principal
-//                Toast.makeText(this, "Usuario correcto", Toast.LENGTH_SHORT).show();
-//                //Intent, enviamos los datos del usuario (nombre e email)
-//                Intent intentPaginaPrincipal = new Intent(LogIn.this, MainActivity.class);
-//                intentPaginaPrincipal.putExtra("nombreUsuario", usuarioObtenido.getNombre());
-//                intentPaginaPrincipal.putExtra("emailUsuario", usuarioObtenido.getEmail());
-//                LogIn.this.startActivity(intentPaginaPrincipal);
-//            } else if (!usuarioObtenido.getPass().equals(txtPassUsuario.getText().toString())) {
-//                //Toast.makeText(this, "La contraseña no es correcta", Toast.LENGTH_LONG).show();
-//                Dialogo dialogo = new Dialogo(context, "La contraseña no es correcta");
-//                dialogo.getDialogo().show();
-//            }
-//        } else {
-//            //Toast.makeText(this, "No existe ningún usuario registrado con ese email", Toast.LENGTH_LONG).show();
-//            Dialogo dialogo = new Dialogo(context, "No existe ningún usuario registrado con ese email");
-//            dialogo.getDialogo().show();
-//        }
-
-        Intent intentPaginaPrincipal = new Intent(LogIn.this, MainActivity.class);
-               intentPaginaPrincipal.putExtra("nombreUsuario", "prueba");
-                intentPaginaPrincipal.putExtra("emailUsuario", "email@prueba");
+        usuarioObtenido = dbUsuario.obtenerUsuario(bd.getWritableDatabase(), txtUsuario.getText().toString(), txtPassUsuario.getText().toString());
+        if (usuarioObtenido != null) {
+            if (usuarioObtenido.getNombre().equals(txtUsuario.getText().toString()) && usuarioObtenido.getPass().equals(txtPassUsuario.getText().toString())) {
+                //Usuario correcto, mostramos la pantalla principal
+                Toast.makeText(this, "Usuario correcto", Toast.LENGTH_SHORT).show();
+                //Intent, enviamos los datos del usuario (nombre e email)
+                Intent intentPaginaPrincipal = new Intent(LogIn.this, MainActivity.class);
+                intentPaginaPrincipal.putExtra("nombreUsuario", obtenerNombreDeEmail(usuarioObtenido.getNombre().toString()));
+                intentPaginaPrincipal.putExtra("emailUsuario", usuarioObtenido.getNombre().toString());
                 LogIn.this.startActivity(intentPaginaPrincipal);
-        finish();
+                finish();
+            } else if (!usuarioObtenido.getPass().equals(txtPassUsuario.getText().toString())) {
+                //Toast.makeText(this, "La contraseña no es correcta", Toast.LENGTH_LONG).show();
+                Dialogo dialogo = new Dialogo(context, "La contraseña no es correcta");
+                dialogo.getDialogo().show();
+            }
+        } else {
+            //Toast.makeText(this, "No existe ningún usuario registrado con ese email", Toast.LENGTH_LONG).show();
+            Dialogo dialogo = new Dialogo(context, "No existe ningún usuario registrado con ese email");
+            dialogo.getDialogo().show();
+        }
+    }
+
+    private String obtenerNombreDeEmail(String email){
+        String nombre = email.substring(0, email.indexOf("@"));
+        return nombre;
     }
 
 }

@@ -152,6 +152,12 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         //Quitamos el menu lateral
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         toolbarAticulo.inflateMenu(R.menu.menu_articulo_editar);
+        toolbarAticulo.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getFragmentManager().popBackStack();
+            }
+        });
         //Obtenemos los textviews
         obtenerTextViews();
         //creamos los onClicks

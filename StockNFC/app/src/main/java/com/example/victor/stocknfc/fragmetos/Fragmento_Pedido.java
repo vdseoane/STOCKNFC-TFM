@@ -1,19 +1,25 @@
 package com.example.victor.stocknfc.fragmetos;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.media.MediaCas;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,15 +38,33 @@ import com.example.victor.stocknfc.VOs.Articulo;
 import com.example.victor.stocknfc.Validaciones;
 import com.example.victor.stocknfc.datos.ArticuloDB;
 import com.example.victor.stocknfc.datos.StockNFCDataBase;
+import com.example.victor.stocknfc.datos.UsuarioDB;
 
 import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Properties;
+
+import javax.mail.Address;
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 public class Fragmento_Pedido extends android.support.v4.app.Fragment {
     Validaciones validaciones = new Validaciones();
     Dialogo dialogo;
+    Session session = null;
+    ProgressDialog pdialog = null;
+    String mensaje;
+    Address destinatarios[];
 
     //Utilidades
     Utilidades utilidades = new Utilidades();
@@ -55,6 +79,7 @@ public class Fragmento_Pedido extends android.support.v4.app.Fragment {
 
     private StockNFCDataBase bd;
     ArticuloDB bdArticulo;
+    UsuarioDB bdUsuario;
 
     TextView nombreArticulo;
     EditText stockArticulo;
@@ -70,7 +95,7 @@ public class Fragmento_Pedido extends android.support.v4.app.Fragment {
 
     PackageManager pm;
 
-    private static final int ENVIAR_EMAIL = 10;
+    private static final int INTERNET = 10;
 
     @Nullable
     @Override
@@ -87,11 +112,13 @@ public class Fragmento_Pedido extends android.support.v4.app.Fragment {
         //Base de datos
         bd = new StockNFCDataBase(getContext());
         bdArticulo = new ArticuloDB(getContext());
+        bdUsuario = new UsuarioDB(getContext());
         //Toolbar
         toolbarAticulo = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbarArticulo);
         toolbarAticulo.setTitle("Realizar Pedido");
         Drawable drawable = getContext().getDrawable(R.drawable.left_arrow);
         toolbarAticulo.setNavigationIcon(drawable);
+
         //Quitamos el menu lateral
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
 
@@ -108,7 +135,6 @@ public class Fragmento_Pedido extends android.support.v4.app.Fragment {
             rellenarCampos(articuloObtenido);
         }
     }
-
 
     private void rellenarCampos(Articulo articuloObtenido) {
         nombreArticulo.setText(articuloObtenido.getNombre());
@@ -137,7 +163,7 @@ public class Fragmento_Pedido extends android.support.v4.app.Fragment {
             @Override
             public void onClick(View view) {
                 //Comprobar permiso NFC
-                int tienePermisoEnviarEmail = pm.checkPermission(Manifest.permission.WRITE_VOICEMAIL, getActivity().getPackageName());
+                int tienePermisoEnviarEmail = pm.checkPermission(Manifest.permission.INTERNET, getActivity().getPackageName());
                 if (tienePermisoEnviarEmail == PackageManager.PERMISSION_GRANTED) {
                     //Comprobar articulo correcto
                     try {
@@ -148,6 +174,24 @@ public class Fragmento_Pedido extends android.support.v4.app.Fragment {
 
                             //Enviamos el email
                             //Contruimos clase para enviar email
+
+                            Properties props = new Properties();
+                            props.put("mail.smtp.host", "smtp.gmail.com");
+                            props.put("mail.smtp.socketFactory.port", "465");
+                            props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+                            props.put("mail.smtp.auth", "true");
+                            props.put("mail.smtp.port", "465");
+
+                            session = Session.getDefaultInstance(props, new Authenticator() {
+                                protected PasswordAuthentication getPasswordAuthentication() {
+                                    return new PasswordAuthentication("stocknfc@gmail.com", "stocknfcadmin");
+                                }
+                            });
+
+                            pdialog = ProgressDialog.show(getContext(), "", getContext().getResources().getString(R.string.enviandoEmail), true);
+
+                            RetreiveFeedTask task = new RetreiveFeedTask();
+                            task.execute();
 //                            Intent intent = new Intent(getContext(), EscrituraActivity.class);
 //                            intent = meterDatosIntent(intent, articulo);
 //                            startActivityForResult(intent, ARTICULO_ANHADIDO);
@@ -157,14 +201,85 @@ public class Fragmento_Pedido extends android.support.v4.app.Fragment {
                     }
                 } else {
                     if (getContext().checkSelfPermission(
-                            Manifest.permission.WRITE_VOICEMAIL)
+                            Manifest.permission.INTERNET)
                             != PackageManager.PERMISSION_GRANTED) {
                         requestPermissions(new String[]{Manifest.permission.WRITE_VOICEMAIL},
-                                ENVIAR_EMAIL);
+                                INTERNET);
                     }
                 }
             }
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == INTERNET) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                botonEnviar.callOnClick();
+            } else {
+                Toast.makeText(getContext(), "No se ha permitido el envío de emails", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    class RetreiveFeedTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            try {
+                Message message = new MimeMessage(session);
+                message.setFrom(new InternetAddress("stocknfc@gmail.com"));
+                message.setRecipients(Message.RecipientType.TO, obtenerDestinatarios());
+                message.setSubject(getContext().getResources().getString(R.string.asuntoEmail));
+                message.setContent(construirMensaje(nombreArticulo.getText().toString(), stockArticulo.getText().toString(), obtenerUsuarioActual()), "text/html; charset=utf-8");
+                Transport.send(message);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            pdialog.dismiss();
+
+            Toast.makeText(getContext(), getContext().getResources().getString(R.string.emailEnviado), Toast.LENGTH_LONG).show();
+            //Volvermos al listado
+        }
+    }
+
+    private String obtenerUsuarioActual() {
+        NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
+        View hView = navigationView.getHeaderView(0);
+        TextView emailUsuario = (TextView) hView.findViewById(R.id.emailUsuarioMenu);
+        return emailUsuario.getText().toString();
+    }
+
+    private Address[] obtenerDestinatarios() {
+        ArrayList<String> listaEmails = bdUsuario.obtenerAdministradores(bd.getWritableDatabase());
+        destinatarios = new Address[listaEmails.size() + 1];
+        for (int i = 0; i < listaEmails.size(); i++) {
+            try {
+                destinatarios[i] = new InternetAddress(listaEmails.get(i));
+            } catch (AddressException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            destinatarios[listaEmails.size()] = new InternetAddress(proveedorArticulo.getText().toString());
+        } catch (AddressException e) {
+            e.printStackTrace();
+        }
+        return destinatarios;
+    }
+
+    private String construirMensaje(String nombreArticulo, String numeroUnidades, String usuario) {
+        mensaje = "El usuario " + usuario + " solicita el envío de " + numeroUnidades + " unidades del producto: " + nombreArticulo;
+        return mensaje;
     }
 
     private boolean comprobarArticuloCorrecto() throws ParseException {
@@ -177,15 +292,17 @@ public class Fragmento_Pedido extends android.support.v4.app.Fragment {
             dialogo.getBuilder().create().show();
             return false;
         } else if (validaciones.textoNoNulo(proveedorArticulo.getText().toString())) {
-                dialogo = new Dialogo(getContext(), getContext().getResources().getString(R.string.msnProveedorNulo));
-                dialogo.getBuilder().create().show();
-                return false;
-            } else
-                return true;
+            dialogo = new Dialogo(getContext(), getContext().getResources().getString(R.string.msnProveedorNulo));
+            dialogo.getBuilder().create().show();
+            return false;
+        } else
+            return true;
     }
 
     private void obtenerDatosGuardar() throws ParseException {
         articuloObtenido.setStock(Integer.parseInt(stockArticulo.getText().toString()));
         articuloObtenido.setProveedor(proveedorArticulo.getText().toString());
     }
+
+
 }

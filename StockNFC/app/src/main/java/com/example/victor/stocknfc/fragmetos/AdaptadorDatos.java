@@ -83,7 +83,7 @@ public class AdaptadorDatos extends RecyclerView.Adapter<AdaptadorDatos.ViewHold
                     bundle.putString("articulo", String.valueOf(articuloObtenido.getId()));
                     fragmento_articulo.setArguments(bundle);
                     FragmentManager manager = ((AppCompatActivity)context).getSupportFragmentManager();
-                    manager.beginTransaction().replace(R.id.contenedorFragments, fragmento_articulo).commit();
+                    manager.beginTransaction().replace(R.id.contenedorFragments, fragmento_articulo).addToBackStack(null).commit();
                 }
             });
         }

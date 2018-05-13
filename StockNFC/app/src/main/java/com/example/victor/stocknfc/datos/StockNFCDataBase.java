@@ -1,5 +1,6 @@
 package com.example.victor.stocknfc.datos;
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,7 +13,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class StockNFCDataBase extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "stockNFCDataBase";
-
+Context context;
     /*
     public static final String TABLE_NAME_PROVEEDOR = "proveedor";
     public static final String TABLE_NAME_USUARIO = "usuario";
@@ -23,6 +24,7 @@ public class StockNFCDataBase extends SQLiteOpenHelper {
 
     public StockNFCDataBase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        context =context;
     }
 
     @Override
@@ -45,6 +47,11 @@ public class StockNFCDataBase extends SQLiteOpenHelper {
                 ConstantesUsuario.NOMBRE_USUARIO + " TEXT NOT NULL, " +
                 ConstantesUsuario.PASS_USUARIO + " TEXT NOT NULL, " +
                 ConstantesUsuario.ROL_USUARIO + " TEXT); ");
+
+        //Administrador
+
+        UsuarioDB dbUsuario = new UsuarioDB(context);
+        dbUsuario.insertarUsuario(db, "victordiazseoane@gmail.com", "Administrador", "nada");
 
     }
 
