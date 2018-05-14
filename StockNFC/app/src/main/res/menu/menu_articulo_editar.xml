@@ -3,19 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/borrarArticuloMenu"
-        android:icon="@drawable/ic_menu_delete"
+        android:icon="@drawable/deletewhite"
         android:title="@string/borrar"
         app:showAsAction="always"></item>
 
     <item
         android:id="@+id/modificarArticuloMenu"
-        android:icon="@drawable/ic_menu_modification"
+        android:icon="@drawable/editwhite"
         android:title="@string/modificar"
         app:showAsAction="always"></item>
 
     <item
         android:id="@+id/anhadirArticuloMenu"
-        android:icon="@drawable/check_black"
+        android:icon="@drawable/tickwhite"
         android:title="@string/guardar"
         app:showAsAction="always"></item>
 </menu>

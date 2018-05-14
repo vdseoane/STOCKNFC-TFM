@@ -13,7 +13,7 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
-        app:cardBackgroundColor="@color/lightOrange"
+        app:cardBackgroundColor="@color/lightGrey3"
         app:cardCornerRadius="15dp"
         android:foreground="?android:attr/selectableItemBackground"
         android:clickable="true">
@@ -21,7 +21,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/lightGrey3">
 
             <ImageView
                 android:id="@+id/imagenArticuloLista"

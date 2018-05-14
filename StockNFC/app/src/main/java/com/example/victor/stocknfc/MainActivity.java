@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.example.victor.stocknfc.fragmetos.Fragmento_ControlStock;
 import com.example.victor.stocknfc.fragmetos.Fragmento_ListaAlertas;
 import com.example.victor.stocknfc.fragmetos.Fragmento_ListadoPedidos;
-import com.example.victor.stocknfc.fragmetos.ListaArticulos;
+import com.example.victor.stocknfc.fragmetos.Fragmento_Lista_Articulos;
 import com.example.victor.stocknfc.logIn.Fragmento_Registro;
 import com.example.victor.stocknfc.logIn.LogIn;
 
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity
         emailUsuario.setText(this.emailUsuario);
 
         //Cargamos por defecto el listado de productos almacenado
-        cargarFragmento(new ListaArticulos());
+        cargarFragmento(new Fragmento_Lista_Articulos());
         navigationView.getMenu().getItem(0).setChecked(true);
     }
 
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         uncheckAllMenuItems(navigationView);
         if (id == R.id.consultarProductoMenu) {
-            cargarFragmento(new ListaArticulos());
+            cargarFragmento(new Fragmento_Lista_Articulos());
         } else if (id == R.id.administrarStock) {
             cargarFragmento(new Fragmento_ControlStock());
         } else if (id == R.id.pedidoMenu) {

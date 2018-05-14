@@ -103,7 +103,7 @@ public class ControlStockActivity extends AppCompatActivity {
                 articulo = bdArticulo.obtenerArticulo(bd.getReadableDatabase(), idArticuloNFC);
                 int cant = decrementarStock(articulo.getStock()-numeroControl, articulo.getId());
                 if (cant >0) {
-                    Toast.makeText(this, "Viejo stock: " + articulo.getStock() + "nuevo stock: " + bdArticulo.obtenerArticulo(bd.getReadableDatabase(), idArticuloNFC).getStock(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Unidades restantes: " + bdArticulo.obtenerArticulo(bd.getReadableDatabase(), idArticuloNFC).getStock(), Toast.LENGTH_SHORT).show();
                     Intent returnIntent = new Intent();
                     returnIntent.putExtra("ID", idArticuloNFC);
                     setResult(this.RESULT_OK, returnIntent);

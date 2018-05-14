@@ -1,0 +1,64 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.victor.stocknfc.fragmetos.Fragmento_Pedido">
+
+    <include layout="@layout/toolbar_articulo"></include>
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:id="@+id/nombreArticuloPedido"
+        android:layout_below="@+id/toolbarArticulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/nombreArticuloPedido"
+        android:layout_marginLeft="3dp"
+        android:inputType="text"
+        android:textSize="24dp"/>
+    <TextView
+        android:id="@+id/stockPedidoText"
+        android:layout_below="@+id/nombreArticuloPedido"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:text="@string/stockPedidoText"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"/>
+    <EditText
+        android:id="@+id/stockArticuloPedido"
+        android:layout_below="@+id/stockPedidoText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/stockPedido"
+        android:inputType="number"/>
+    <TextView
+        android:id="@+id/proveedorPedidoText"
+        android:layout_below="@+id/stockArticuloPedido"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:text="@string/proveedorArticuloText"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"/>
+    <EditText
+        android:id="@+id/proveedorArticuloPedido"
+        android:layout_below="@+id/proveedorPedidoText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/proveedorArticulo"
+        android:inputType="textEmailAddress"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/botonEnviar"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="bottom|right|end"
+        android:layout_marginBottom="15dp"
+        android:layout_marginEnd="15dp"
+        android:src="@drawable/ic_menu_send" />
+
+</RelativeLayout>

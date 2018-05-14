@@ -109,10 +109,10 @@ public class EscrituraActivity extends AppCompatActivity {
                     }
                 }
             } catch (IOException e) {
-                Toast.makeText(this, this.getString(R.string.errorEscritura), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, this.getString(R.string.errorEscritura), Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             } catch (FormatException e) {
-                Toast.makeText(this, this.getString(R.string.errorEscritura), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, this.getString(R.string.errorEscritura), Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
         }

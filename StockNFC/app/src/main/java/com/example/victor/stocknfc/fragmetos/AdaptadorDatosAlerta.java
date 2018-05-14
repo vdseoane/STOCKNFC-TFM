@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 public class AdaptadorDatosAlerta extends RecyclerView.Adapter<AdaptadorDatosAlerta.ViewHolderDatos> {
 
-    Fragmento_Pedido fragmento_pedido= new Fragmento_Pedido();
+    Fragmento_Pedido_Alerta fragmento_pedido= new Fragmento_Pedido_Alerta();
 
     private Context context;
     private ArrayList<Articulo> listaArticulos;

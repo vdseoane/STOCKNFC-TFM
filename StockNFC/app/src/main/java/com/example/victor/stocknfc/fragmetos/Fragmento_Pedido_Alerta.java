@@ -2,17 +2,10 @@ package com.example.victor.stocknfc.fragmetos;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.media.MediaCas;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -22,16 +15,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.victor.stocknfc.Dialogo;
-import com.example.victor.stocknfc.EscrituraActivity;
 import com.example.victor.stocknfc.R;
 import com.example.victor.stocknfc.Utilidades;
 import com.example.victor.stocknfc.VOs.Articulo;
@@ -40,11 +30,8 @@ import com.example.victor.stocknfc.datos.ArticuloDB;
 import com.example.victor.stocknfc.datos.StockNFCDataBase;
 import com.example.victor.stocknfc.datos.UsuarioDB;
 
-import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Properties;
 
 import javax.mail.Address;
@@ -58,7 +45,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-public class Fragmento_Pedido extends android.support.v4.app.Fragment {
+public class Fragmento_Pedido_Alerta extends android.support.v4.app.Fragment {
     Validaciones validaciones = new Validaciones();
     Dialogo dialogo;
     Session session = null;
@@ -70,7 +57,7 @@ public class Fragmento_Pedido extends android.support.v4.app.Fragment {
     Utilidades utilidades = new Utilidades();
 
     //Toolbar
-    android.support.v7.widget.Toolbar toolbarAticulo;
+    Toolbar toolbarAticulo;
     //Menu lateral
     DrawerLayout drawer;
 
@@ -101,7 +88,7 @@ public class Fragmento_Pedido extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        return inflater.inflate(R.layout.fragmento_pedido, container, false);
+        return inflater.inflate(R.layout.fragmento_pedido_alerta, container, false);
     }
 
     @Override
@@ -114,8 +101,8 @@ public class Fragmento_Pedido extends android.support.v4.app.Fragment {
         bdArticulo = new ArticuloDB(getContext());
         bdUsuario = new UsuarioDB(getContext());
         //Toolbar
-        toolbarAticulo = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbarArticulo);
-        toolbarAticulo.setTitle("Realizar Pedido");
+        toolbarAticulo = (Toolbar) getActivity().findViewById(R.id.toolbarArticulo);
+        toolbarAticulo.setTitle("Realizar Pedido con Alerta");
         Drawable drawable = getContext().getDrawable(R.drawable.leftarrowwhite);
         toolbarAticulo.setNavigationIcon(drawable);
 
@@ -155,7 +142,7 @@ public class Fragmento_Pedido extends android.support.v4.app.Fragment {
         toolbarAticulo.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getFragmentManager().beginTransaction().replace(R.id.contenedorFragments, new Fragmento_ListadoPedidos()).commit();
+                getFragmentManager().beginTransaction().replace(R.id.contenedorFragments, new Fragmento_ListaAlertas()).commit();
             }
         });
 
@@ -170,11 +157,8 @@ public class Fragmento_Pedido extends android.support.v4.app.Fragment {
                         utilidades.esconderTeclado(getActivity(), getContext());
                         if (comprobarArticuloCorrecto()) {
                             obtenerDatosGuardar();
-                            //Lanzamos dialogo
-
                             //Enviamos el email
                             //Contruimos clase para enviar email
-
                             Properties props = new Properties();
                             props.put("mail.smtp.host", "smtp.gmail.com");
                             props.put("mail.smtp.socketFactory.port", "465");
@@ -187,7 +171,7 @@ public class Fragmento_Pedido extends android.support.v4.app.Fragment {
                                     return new PasswordAuthentication("stocknfc@gmail.com", "stocknfcadmin");
                                 }
                             });
-
+                            //Lanzamos dialogo
                             pdialog = ProgressDialog.show(getContext(), "", getContext().getResources().getString(R.string.enviandoEmail), true);
 
                             RetreiveFeedTask task = new RetreiveFeedTask();
@@ -233,7 +217,7 @@ public class Fragmento_Pedido extends android.support.v4.app.Fragment {
                 message.setFrom(new InternetAddress("stocknfc@gmail.com"));
                 message.setRecipients(Message.RecipientType.TO, obtenerDestinatarios());
                 message.setSubject(getContext().getResources().getString(R.string.asuntoEmail));
-                message.setContent(construirMensaje(nombreArticulo.getText().toString(), stockArticulo.getText().toString(), obtenerUsuarioActual()), "text/html; charset=utf-8");
+                message.setContent(construirMensaje(nombreArticulo.getText().toString(), stockArticulo.getText().toString(), Utilidades.obtenerUsuarioActual(getActivity())), "text/html; charset=utf-8");
                 Transport.send(message);
             } catch (MessagingException e) {
                 e.printStackTrace();
@@ -250,13 +234,6 @@ public class Fragmento_Pedido extends android.support.v4.app.Fragment {
             Toast.makeText(getContext(), getContext().getResources().getString(R.string.emailEnviado), Toast.LENGTH_LONG).show();
             //Volvermos al listado
         }
-    }
-
-    private String obtenerUsuarioActual() {
-        NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
-        View hView = navigationView.getHeaderView(0);
-        TextView emailUsuario = (TextView) hView.findViewById(R.id.emailUsuarioMenu);
-        return emailUsuario.getText().toString();
     }
 
     private Address[] obtenerDestinatarios() {

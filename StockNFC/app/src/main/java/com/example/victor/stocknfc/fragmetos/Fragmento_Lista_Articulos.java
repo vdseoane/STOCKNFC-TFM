@@ -4,6 +4,7 @@ package com.example.victor.stocknfc.fragmetos;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.annotation.Nullable;
@@ -11,8 +12,11 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +34,7 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ListaArticulos extends android.support.v4.app.Fragment {
+public class Fragmento_Lista_Articulos extends android.support.v4.app.Fragment {
     public StockNFCDataBase bd;
     ArticuloDB bdArticulo;
 
@@ -38,7 +42,7 @@ public class ListaArticulos extends android.support.v4.app.Fragment {
     RecyclerView recycler;
     Context context;
 
-    public ListaArticulos() {
+    public Fragmento_Lista_Articulos() {
         // Required empty public constructor
     }
 
@@ -72,8 +76,31 @@ botonAnadir.setOnClickListener(new View.OnClickListener() {
         listaArticulo = obtenerArticulos();
         for(int i=0; i<listaArticulo.size(); i++){
             AdaptadorDatos adapter = new AdaptadorDatos(getActivity(), listaArticulo);
+
+//            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 2);
+//            recycler.setLayoutManager(mLayoutManager);
+//            recycler.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
+//            recycler.setItemAnimator(new DefaultItemAnimator());
             recycler.setAdapter(adapter);
         }
+    }
+
+    public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
+
+        private int spanCount;
+        private int spacing;
+        private boolean includeEdge;
+
+        public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
+            this.spanCount = spanCount;
+            this.spacing = spacing;
+            this.includeEdge = includeEdge;
+        }
+    }
+
+    private int dpToPx(int dp) {
+        Resources r = getResources();
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
     }
 
     private ArrayList<Articulo> obtenerArticulos() {

@@ -22,7 +22,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
         android:gravity="center"
-        android:hint="Nume"
+        android:inputType="number"
+        android:hint="Num"
         android:maxLines="1"
         android:textSize="50dp" />
 

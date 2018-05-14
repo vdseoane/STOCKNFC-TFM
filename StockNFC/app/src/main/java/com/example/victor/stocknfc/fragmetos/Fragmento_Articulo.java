@@ -2,15 +2,9 @@ package com.example.victor.stocknfc.fragmetos;
 
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.ClipData;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -18,7 +12,6 @@ import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -27,27 +20,16 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.example.victor.stocknfc.Dialogo;
 import com.example.victor.stocknfc.EscrituraActivity;
@@ -58,11 +40,9 @@ import com.example.victor.stocknfc.Validaciones;
 import com.example.victor.stocknfc.datos.ArticuloDB;
 import com.example.victor.stocknfc.datos.StockNFCDataBase;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -147,7 +127,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         //Toolbar
         toolbarAticulo = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbarArticulo);
         toolbarAticulo.setTitle("Articulo");
-        Drawable drawable = getContext().getDrawable(R.drawable.left_arrow);
+        Drawable drawable = getContext().getDrawable(R.drawable.leftarrowwhite);
         toolbarAticulo.setNavigationIcon(drawable);
         //Quitamos el menu lateral
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
@@ -272,7 +252,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
                         int cant = bdArticulo.eliminarArticulo(bd.getWritableDatabase(), articuloObtenido.getId());
                         if (cant > 0) {
                             Toast.makeText(getContext(), "Articulo borrado", Toast.LENGTH_SHORT).show();
-                            getFragmentManager().beginTransaction().replace(R.id.contenedorFragments, new ListaArticulos()).commit();
+                            getFragmentManager().beginTransaction().replace(R.id.contenedorFragments, new Fragmento_Lista_Articulos()).commit();
                         } else {
                             Toast.makeText(getContext(), "Error al borrar el artículo", Toast.LENGTH_SHORT).show();
                         }
@@ -305,7 +285,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         toolbarAticulo.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getFragmentManager().beginTransaction().replace(R.id.contenedorFragments, new ListaArticulos()).commit();
+                getFragmentManager().beginTransaction().replace(R.id.contenedorFragments, new Fragmento_Lista_Articulos()).commit();
             }
         });
 
@@ -475,7 +455,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
 
         if (inserccion != -1) {
             Toast.makeText(getContext(), "Articulo añadido correctamente", Toast.LENGTH_LONG).show();
-            getFragmentManager().beginTransaction().replace(R.id.contenedorFragments, new ListaArticulos()).commit();
+            getFragmentManager().beginTransaction().replace(R.id.contenedorFragments, new Fragmento_Lista_Articulos()).commit();
         } else {
             Dialogo dialogo = new Dialogo(getContext(), "Ha habido un error al insertar el artículo");
             dialogo.getDialogo().show();
@@ -487,7 +467,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
 
         if (edicion != -1) {
             Toast.makeText(getContext(), "Articulo editado correctamente", Toast.LENGTH_LONG).show();
-            getFragmentManager().beginTransaction().replace(R.id.contenedorFragments, new ListaArticulos()).commit();
+            getFragmentManager().beginTransaction().replace(R.id.contenedorFragments, new Fragmento_Lista_Articulos()).commit();
         } else {
             Dialogo dialogo = new Dialogo(getContext(), "Ha habido un error al editar el artículo");
             dialogo.getDialogo().show();
@@ -516,7 +496,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         else if (requestCode == ARTICULO_ANHADIDO
                 && resultCode == getActivity().RESULT_OK) {
             Toast.makeText(getContext(), "Articulo añadido correctamente", Toast.LENGTH_LONG).show();
-            getFragmentManager().beginTransaction().replace(R.id.contenedorFragments, new ListaArticulos()).commit();
+            getFragmentManager().beginTransaction().replace(R.id.contenedorFragments, new Fragmento_Lista_Articulos()).commit();
         }else{
             Dialogo dialogoNFC = new Dialogo(getContext(),"NFC no operativo, por favor, habilite el NFC y reintente la operación");
             dialogoNFC.getBuilder().show();
@@ -577,7 +557,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
             Drawable drawable = getResources().getDrawable(R.drawable.trolley, null);
             Drawable drawable2 = imgArticulo.getDrawable();
             //if(bitmapDrawable == drawable && bitmapDrawable != drawable)
-            if (!validaciones.esNulo(drawable2) && drawable2 != drawable) {
+            if (!validaciones.esNulo(drawable2) && !getBitmap(drawable).sameAs(getBitmap(drawable2))) {
                 Bitmap bitmap = drawableToBitmap(drawable2);
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
@@ -585,6 +565,29 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
             }
             return true;
         }
+    }
+
+    public static Bitmap getBitmap(Drawable drawable) {
+        Bitmap result;
+        if (drawable instanceof BitmapDrawable) {
+            result = ((BitmapDrawable) drawable).getBitmap();
+        } else {
+            int width = drawable.getIntrinsicWidth();
+            int height = drawable.getIntrinsicHeight();
+            // Some drawables have no intrinsic width - e.g. solid colours.
+            if (width <= 0) {
+                width = 1;
+            }
+            if (height <= 0) {
+                height = 1;
+            }
+
+            result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(result);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+        }
+        return result;
     }
 
     public static Bitmap drawableToBitmap(Drawable drawable) {
