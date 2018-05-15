@@ -22,6 +22,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,6 +34,7 @@ import android.widget.Toast;
 
 import com.example.victor.stocknfc.Dialogo;
 import com.example.victor.stocknfc.EscrituraActivity;
+import com.example.victor.stocknfc.PhotoUtils;
 import com.example.victor.stocknfc.R;
 import com.example.victor.stocknfc.Utilidades;
 import com.example.victor.stocknfc.VOs.Articulo;
@@ -42,6 +44,7 @@ import com.example.victor.stocknfc.datos.StockNFCDataBase;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -81,10 +84,11 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
     EditText fechaArticulo;
     EditText proveedorArticulo;
     ImageView imgArticulo;
-    Uri imgUri;
+    private Uri mImageUri;
     String path;
     SimpleDateFormat fechaFormat = new SimpleDateFormat("dd-MM-yyyy");
     Date fechaArticuloDate = new Date();
+    private PhotoUtils photoUtils;
 
 
     //Datos articulo
@@ -98,6 +102,7 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
     String proveedor;
     int id;
     byte[] imageInByte;
+    File mediaFile;
 
     PackageManager pm;
 
@@ -124,6 +129,8 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
         //Base de datos
         bd = new StockNFCDataBase(getContext());
         bdArticulo = new ArticuloDB(getContext());
+
+        photoUtils = new PhotoUtils(getContext());
         //Toolbar
         toolbarAticulo = (android.support.v7.widget.Toolbar) getActivity().findViewById(R.id.toolbarArticulo);
         toolbarAticulo.setTitle("Articulo");
@@ -355,8 +362,19 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
                         if (options[item].equals("Take Photo")) {
                             dialog.dismiss();
                             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            //imgUri = Uri.fromFile(getFile());
-                            //intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, imgUri);
+//                            File photo = null;
+//                            try {
+//                                // place where to store camera taken picture
+//                                photo = PhotoUtils.createTemporaryFile("picture", ".jpg", getActivity());
+//                                photo.delete();
+//                            } catch (Exception e) {
+//                                Log.v(getClass().getSimpleName(),
+//                                        "Can't create file to take picture!");
+//                            }
+//                            mImageUri = Uri.fromFile(photo);
+//                            intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+//                            //imgUri = Uri.fromFile(getFile());
+//                            //intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, imgUri);
                             startActivityForResult(intent, ACTIVITY_SELECT_FROM_CAMERA);
                         } else if (options[item].equals("Choose From Gallery")) {
                             dialog.dismiss();
@@ -483,15 +501,35 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ACTIVITY_SELECT_IMAGE && resultCode == getActivity().RESULT_OK) {
-            imgUri = data.getData();
+            mImageUri = data.getData();
             imgArticulo.setBackground(null);
-            imgArticulo.setImageURI(imgUri);
+            imgArticulo.setImageURI(mImageUri);
+
         } else if (requestCode == ACTIVITY_SELECT_FROM_CAMERA
                 && resultCode == getActivity().RESULT_OK) {
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            Bitmap photo = (Bitmap) data.getExtras().get("data");;
+            File sd = Environment.getExternalStorageDirectory();
+            File imageFolder = new File(sd.getAbsolutePath() + File.separator +
+                    "fotosStockNFC" + File.separator + "img");
+
+            if (!imageFolder.isDirectory())
+            {
+                imageFolder.mkdirs();
+            }
+
+            mediaFile = new File(imageFolder + File.separator + "img_" +
+                    System.currentTimeMillis() + ".jpg");
+            try {
+                FileOutputStream fileOutputStream = new FileOutputStream(mediaFile);
+                photo.compress(Bitmap.CompressFormat.JPEG, 90, fileOutputStream);
+                fileOutputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             // Bitmap photo2 = rotarImagen(photo);
             imgArticulo.setBackground(null);
-            imgArticulo.setImageBitmap(photo);
+            imgArticulo.setImageBitmap(rotarImagen(photo));
+            //imgArticulo.setImageBitmap(photo);
         }
         else if (requestCode == ARTICULO_ANHADIDO
                 && resultCode == getActivity().RESULT_OK) {
@@ -506,24 +544,13 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
     private Bitmap rotarImagen(Bitmap bitmap) {
         ExifInterface exifInterface = null;
         try {
-            exifInterface = new ExifInterface(String.valueOf(imgUri));
+            exifInterface = new ExifInterface(mediaFile.getPath());
         } catch (IOException e) {
             e.printStackTrace();
         }
         int orientacion = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
         Matrix matrix = new Matrix();
-        switch (orientacion) {
-            case ExifInterface.ORIENTATION_ROTATE_90:
                 matrix.setRotate(90);
-                break;
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                matrix.setRotate(180);
-                break;
-            case ExifInterface.ORIENTATION_ROTATE_270:
-                matrix.setRotate(270);
-                break;
-            default:
-        }
         Bitmap rotadoBitMap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
         return rotadoBitMap;
     }
