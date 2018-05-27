@@ -53,4 +53,8 @@ public class ConstantesArticulo {
      * Proveedor del articulo
      */
     public static final String PROVEEDOR_ARTICULO = "proveedor_articulo";
+    /**
+     * Email del usuario que crea el artículo
+     */
+    public static final String EMAIL_USUARIO = "email_usuario";
 }
