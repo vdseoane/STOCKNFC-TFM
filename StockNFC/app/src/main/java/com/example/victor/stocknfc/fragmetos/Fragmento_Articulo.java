@@ -353,13 +353,13 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
             int tienePermisoLeerDatos = pm.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, getActivity().getPackageName());
             int tienePermisoEscribirDatos = pm.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, getActivity().getPackageName());
             if (tienePermisoCamara == PackageManager.PERMISSION_GRANTED && PackageManager.PERMISSION_GRANTED == tienePermisoLeerDatos && PackageManager.PERMISSION_GRANTED == tienePermisoEscribirDatos) {
-                final CharSequence[] options = {"Take Photo", "Choose From Gallery", "Cancel"};
+                final CharSequence[] options = {"Hacer Foto", "Escoger de la Galeria", "Cancelar"};
                 android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
-                builder.setTitle("Select Option");
+                builder.setTitle("Selecciona una opción");
                 builder.setItems(options, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int item) {
-                        if (options[item].equals("Take Photo")) {
+                        if (options[item].equals("Hacer Foto")) {
                             dialog.dismiss();
                             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 //                            File photo = null;
@@ -376,11 +376,11 @@ public class Fragmento_Articulo extends android.support.v4.app.Fragment {
 //                            //imgUri = Uri.fromFile(getFile());
 //                            //intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, imgUri);
                             startActivityForResult(intent, ACTIVITY_SELECT_FROM_CAMERA);
-                        } else if (options[item].equals("Choose From Gallery")) {
+                        } else if (options[item].equals("Escoger de la Galeria")) {
                             dialog.dismiss();
                             Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                             startActivityForResult(pickPhoto, ACTIVITY_SELECT_IMAGE);
-                        } else if (options[item].equals("Cancel")) {
+                        } else if (options[item].equals("Cancelar")) {
                             dialog.dismiss();
                         }
                     }

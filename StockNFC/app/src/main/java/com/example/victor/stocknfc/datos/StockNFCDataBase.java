@@ -40,6 +40,7 @@ Context context;
                 ConstantesArticulo.PRECIO_ARTICULO + " FLOAT, " +
                 ConstantesArticulo.IMAGEN_ARTICULO + " BLOB, " +
                 ConstantesArticulo.PROVEEDOR_ARTICULO + " TEXT, " +
+                ConstantesArticulo.EMAIL_USUARIO + " TEXT, " +
                 ConstantesArticulo.STOCK_ARTICULO + " INTEGER NOT NULL);");
 
         //Usuario

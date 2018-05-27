@@ -25,7 +25,8 @@
         android:inputType="number"
         android:hint="Num"
         android:maxLines="1"
-        android:textSize="50dp" />
+        android:textSize="50dp"
+        android:text="1"/>
 
     <SeekBar
         android:id="@+id/barra"
