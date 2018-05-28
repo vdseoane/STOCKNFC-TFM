@@ -81,6 +81,7 @@
     <string name="enviandoEmail">Enviando email a proveedor</string>
     <string name="asuntoEmail">Realización de pedido</string>
     <string name="emailEnviado">Email enviado</string>
+    <string name="asuntoEmailAlerta">Alerta por stock bajo!!</string>
 
     <string-array name="array_roles">
         <item>Administrador</item>

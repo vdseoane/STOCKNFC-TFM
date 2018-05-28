@@ -71,4 +71,24 @@ public class UsuarioDB extends StockNFCDataBase {
 
         return emails;
     }
+
+    public Usuario getUsuario(SQLiteDatabase db, String emailUsuario) {
+        db  = getReadableDatabase();
+        String condicion = ConstantesUsuario.NOMBRE_USUARIO+ "= '" + emailUsuario +"'";
+        Usuario usuario = null;
+        Cursor c = db.query(ConstantesUsuario.USUARIO_TABLE_NAME,
+                null, condicion, null, null, null, null);
+        if (c.moveToFirst()){
+            int emailIndex = c.getColumnIndex(ConstantesUsuario.NOMBRE_USUARIO);
+int rolIndex = c.getColumnIndex(ConstantesUsuario.ROL_USUARIO);
+            do {
+                String emailUsuario2 = c.getString(emailIndex);
+                String rol = c.getString(rolIndex);
+
+                usuario= new Usuario(emailUsuario2, "", rol);
+            } while (c.moveToNext());
+        }
+
+        return usuario;
+    }
 }

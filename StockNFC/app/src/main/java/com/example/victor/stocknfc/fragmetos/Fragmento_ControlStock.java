@@ -171,7 +171,7 @@ numeroControl.setText(String.valueOf(barra.getProgress()));
                 Message message = new MimeMessage(session);
                 message.setFrom(new InternetAddress("stocknfc@gmail.com"));
                 message.setRecipients(Message.RecipientType.TO, obtenerDestinatarios());
-                message.setSubject(getContext().getResources().getString(R.string.asuntoEmail));
+                message.setSubject(getContext().getResources().getString(R.string.asuntoEmailAlerta));
                 message.setContent(construirMensaje(articuloStock.getNombre().toString()), "text/html; charset=utf-8");
                 Transport.send(message);
             } catch (MessagingException e) {

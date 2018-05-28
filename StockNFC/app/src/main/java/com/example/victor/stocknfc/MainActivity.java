@@ -16,6 +16,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.example.victor.stocknfc.VOs.Usuario;
+import com.example.victor.stocknfc.datos.ArticuloDB;
+import com.example.victor.stocknfc.datos.StockNFCDataBase;
+import com.example.victor.stocknfc.datos.UsuarioDB;
 import com.example.victor.stocknfc.fragmetos.Fragmento_ControlStock;
 import com.example.victor.stocknfc.fragmetos.Fragmento_ListaAlertas;
 import com.example.victor.stocknfc.fragmetos.Fragmento_ListadoPedidos;
@@ -30,6 +34,10 @@ public class MainActivity extends AppCompatActivity
     String nombreUsuario;
     String emailUsuario;
     NavigationView navigationView;
+    Usuario usuario;
+    UsuarioDB usuarioDB;
+    private StockNFCDataBase bd;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +46,8 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        bd = new StockNFCDataBase(this);
+        usuarioDB = new UsuarioDB(this);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -108,6 +118,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.alertaStockMenu) {
             cargarFragmento(new Fragmento_ListaAlertas());
         } else if (id == R.id.anhadirUsuarioMenu) {
+            if(usuario.getRol().equals("Administrador"))
             cargarFragmento(new Fragmento_Registro());
         } else if (id == R.id.cerrarSesion) {
 
@@ -134,6 +145,13 @@ public class MainActivity extends AppCompatActivity
         Bundle extras = getIntent().getExtras();
         nombreUsuario = extras.getString("nombreUsuario");
         emailUsuario = extras.getString("emailUsuario");
+
+        usuario = usuarioDB.getUsuario(bd.getWritableDatabase(), emailUsuario);
+        Menu menu = navigationView.getMenu();
+        if(usuario.getRol().equals("Empleado")) {
+menu.getItem(4).setEnabled(false);
+        }else
+            menu.getItem(4).setEnabled(true);
     }
 
     private void uncheckAllMenuItems(NavigationView navigationView) {
