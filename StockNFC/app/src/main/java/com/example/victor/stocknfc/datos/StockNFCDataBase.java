@@ -52,7 +52,7 @@ Context context;
         //Administrador
 
         UsuarioDB dbUsuario = new UsuarioDB(context);
-        dbUsuario.insertarUsuario(db, "victordiazseoane@gmail.com", "Administrador", "nada");
+        dbUsuario.insertarUsuario(db, "stocknfc@gmail.com", "Administrador", "stocknfc");
 
     }
 
