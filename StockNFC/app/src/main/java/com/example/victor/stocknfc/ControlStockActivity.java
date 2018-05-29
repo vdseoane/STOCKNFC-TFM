@@ -101,15 +101,22 @@ public class ControlStockActivity extends AppCompatActivity {
             if(parcelables != null && parcelables.length > 0) {
                 int idArticuloNFC = Integer.valueOf(readTextFromMessage((NdefMessage) parcelables[0]));
                 articulo = bdArticulo.obtenerArticulo(bd.getReadableDatabase(), idArticuloNFC);
-                int cant = decrementarStock(articulo.getStock()-numeroControl, articulo.getId());
-                if (cant >0) {
-                    Toast.makeText(this, "Unidades restantes: " + bdArticulo.obtenerArticulo(bd.getReadableDatabase(), idArticuloNFC).getStock(), Toast.LENGTH_SHORT).show();
-                    Intent returnIntent = new Intent();
-                    returnIntent.putExtra("ID", idArticuloNFC);
+                Intent returnIntent = new Intent();
+                if(articulo.getStock() < numeroControl){
+                    returnIntent.putExtra("ID", -1);
                     setResult(this.RESULT_OK, returnIntent);
                     finish();
-                }else{
-                    Toast.makeText(this, "Error al modificar el artículo", Toast.LENGTH_SHORT).show();
+                }else {
+                    int cant = decrementarStock(articulo.getStock() - numeroControl, articulo.getId());
+                    if (cant > 0) {
+                        Toast.makeText(this, "Unidades restantes: " + bdArticulo.obtenerArticulo(bd.getReadableDatabase(), idArticuloNFC).getStock(), Toast.LENGTH_SHORT).show();
+
+                        returnIntent.putExtra("ID", idArticuloNFC);
+                        setResult(this.RESULT_OK, returnIntent);
+                        finish();
+                    } else {
+                        Toast.makeText(this, "Error al modificar el artículo", Toast.LENGTH_SHORT).show();
+                    }
                 }
             } else {
                 Toast.makeText(this, "Etiqueta vacía", Toast.LENGTH_SHORT).show();

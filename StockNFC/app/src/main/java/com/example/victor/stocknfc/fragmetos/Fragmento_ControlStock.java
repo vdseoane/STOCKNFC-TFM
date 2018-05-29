@@ -131,27 +131,32 @@ numeroControl.setText(String.valueOf(barra.getProgress()));
             Dialogo dialogoNFC = new Dialogo(getContext(),"NFC no operativo, por favor, habilite el NFC y reintente la operación");
             dialogoNFC.getBuilder().show();
         }else{
-            //Reseteamos campos
-            resetearCampos();
-            //Comprobamos la alerta
-            articuloStock = bdArticulo.obtenerArticulo(bd.getWritableDatabase(), data.getIntExtra("ID", 0));
-            if(articuloStock.getAlertaStock() >= articuloStock.getStock()){
-                //Enviamos email
-                Properties props = new Properties();
-                props.put("mail.smtp.host", "smtp.gmail.com");
-                props.put("mail.smtp.socketFactory.port", "465");
-                props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-                props.put("mail.smtp.auth", "true");
-                props.put("mail.smtp.port", "465");
+            if(data.getIntExtra("ID", 0) == -1){
+                Dialogo dialogo = new Dialogo(getContext(),"No hay suficiente stock!!");
+                dialogo.getBuilder().show();
+            }else {
+                //Reseteamos campos
+                resetearCampos();
+                //Comprobamos la alerta
+                articuloStock = bdArticulo.obtenerArticulo(bd.getWritableDatabase(), data.getIntExtra("ID", 0));
+                if (articuloStock.getAlertaStock() >= articuloStock.getStock()) {
+                    //Enviamos email
+                    Properties props = new Properties();
+                    props.put("mail.smtp.host", "smtp.gmail.com");
+                    props.put("mail.smtp.socketFactory.port", "465");
+                    props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+                    props.put("mail.smtp.auth", "true");
+                    props.put("mail.smtp.port", "465");
 
-                session = Session.getDefaultInstance(props, new Authenticator() {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication("stocknfc@gmail.com", "stocknfcadmin");
-                    }
-                });
+                    session = Session.getDefaultInstance(props, new Authenticator() {
+                        protected PasswordAuthentication getPasswordAuthentication() {
+                            return new PasswordAuthentication("stocknfc@gmail.com", "stocknfcadmin");
+                        }
+                    });
 
-                Fragmento_ControlStock.RetreiveFeedTask task = new Fragmento_ControlStock.RetreiveFeedTask();
-                task.execute();
+                    Fragmento_ControlStock.RetreiveFeedTask task = new Fragmento_ControlStock.RetreiveFeedTask();
+                    task.execute();
+                }
             }
 //            Bundle bundle = new Bundle();
 //            fragmento_articulo = new Fragmento_Articulo();
