@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Traces count="5" totalframe="5092" aspect="169">
+ <Trace duration="254648" type="0" canBeRemoved="0" index="0" traceId="trace_main">
+  <ItemData cropBorderColor="#000000" isArchieve="0" width="720" transMode="-1" volume="0" overlayMaxW="-1" filepath="D:/Descargas/tfm.mp4" itemid="" effectId="" assBackVideo="" overlayPosY="-1" bRemoveOrignal="0" bFadein="0" starttime="2050" staturation="0" cropHeight="-1" itemtype="0" endtime="251745" bRemoveNoise="0" montionId="" contrast="0" fadeInTime="0" bReversPlayer="0" stabilization="0" overlayMaxH="-1" fadeOutTime="0" height="1280" tint="0" montionDur="3000" rotate="" posX="0" overlayPosX="-1" chromaKeyColor="" brightness="0" chromaKeyTrans="100" srtFile="" assFile="" bPitch="0" speed="1" transIndexKey="0" transparence="100" cropWidth="-1" timelineLayer="0" temperature="0" bFadeout="0" max_duration="267590" bRepeat="1" srtTopY="0" timelinePostion="0" posY="0" id="item_data_1582" pitchValue="0">
+   <AssContent><![CDATA[]]></AssContent>
+  </ItemData>
+  <ItemData cropBorderColor="#000000" isArchieve="0" width="720" transMode="-1" volume="0" overlayMaxW="-1" filepath="D:/Descargas/tfm.mp4" itemid="" effectId="" assBackVideo="" overlayPosY="-1" bRemoveOrignal="0" bFadein="0" starttime="259750" staturation="0" cropHeight="-1" itemtype="0" endtime="264703" bRemoveNoise="0" montionId="" contrast="0" fadeInTime="0" bReversPlayer="0" stabilization="0" overlayMaxH="-1" fadeOutTime="0" height="1280" tint="0" montionDur="3000" rotate="" posX="0" overlayPosX="-1" chromaKeyColor="" brightness="0" chromaKeyTrans="100" srtFile="" assFile="" bPitch="0" speed="1" transIndexKey="0" transparence="100" cropWidth="-1" timelineLayer="0" temperature="0" bFadeout="0" max_duration="267590" bRepeat="1" srtTopY="0" timelinePostion="249695" posY="0" id="item_data_1588" pitchValue="0">
+   <AssContent><![CDATA[]]></AssContent>
+  </ItemData>
+ </Trace>
+ <Trace duration="0" type="1" canBeRemoved="0" index="1" traceId="trace_overlay"/>
+ <Trace duration="0" type="2" canBeRemoved="0" index="2" traceId="trace_text"/>
+ <Trace duration="0" type="3" canBeRemoved="0" index="3" traceId="trace_audio"/>
+ <Trace duration="0" type="4" canBeRemoved="0" index="4" traceId="trace_filter"/>
+</Traces>
